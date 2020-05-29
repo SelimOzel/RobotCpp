@@ -10,6 +10,7 @@ This is a dynamic simulator targeting robot control applications. It is written 
 1. Install GNU Make from [sourceforge](http://gnuwin32.sourceforge.net/packages/make.htm).
 2. Install Minimalist GNU for Windows from the organization's [page](http://www.mingw.org/wiki/Install_MinGW).
 3. Verify both installations on Windows 10 command line `g++ --version` and `make --version`.
+4. (Optional) To visualize you will need python3 and matplotlib. Follow insturctions on matplotlib's [web site](https://matplotlib.org/users/installing.html) for Windows 10 installation.
 
 ## Building & Visualizing Examples
 1. Open Windows 10 command line and change directory to root of the project.
