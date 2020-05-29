@@ -86,30 +86,41 @@ public:
 	// Export simulation csv file
 	void ExportCSV(char const* s)
 	{
-		std::ofstream output_file (s);
-		for(size_t r = 0; r<_timeVector.size(); r++)
-		{
-			output_file << _timeVector[r] << ", ";
-			for(double& s: _stateVector[r]) output_file << s << ", ";
-			for(auto it = _inputVector[r].begin(); it != _inputVector[r].end(); ++it)
+		try{
+			if(_timeVector.size() > 0)
 			{
-				if(it+1 != _inputVector[r].end())
+				std::ofstream output_file (s);
+				for(size_t r = 0; r<_timeVector.size(); r++)
 				{
-					output_file << *it << ", ";
+					output_file << _timeVector[r] << ", ";
+					for(double& s: _stateVector[r]) output_file << s << ", ";
+					for(auto it = _inputVector[r].begin(); it != _inputVector[r].end(); ++it)
+					{
+						if(it+1 != _inputVector[r].end())
+						{
+							output_file << *it << ", ";
+						}
+						else
+						{
+							output_file << *it;
+						}
+					}
+
+					output_file << "\n";
 				}
-				else
-				{
-					output_file << *it;
-				}
+
+				output_file.close();
 			}
-
-			output_file << "\n";
+			else
+			{
+				throw "Can't export csv: Run the simulation first.\n";
+			}
 		}
-
-		output_file.close();
+		catch(char const* s)
+		{
+			std::cout << s;
+		}		
 	}	
-
-	// Output can be exported after simulation is run.
 
 protected:
 	// System Equations: only diff is protected
