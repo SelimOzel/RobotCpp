@@ -2,22 +2,20 @@
 
 # Builder
 define Builder
-	g++ $(1) 
-	mv $(2) bin
-	mv $(3) obj
-	@echo --- Completed $(1) 
+	g++ -o $(2) $(1) -Isrc 
 endef
 
-all: output_folders wheel_simple
+all: output_folder wheel_simple
 	@echo --- Building all examples
 
-output_folders:
-	if not exist examples\_bin (mkdir examples\_bin examples\_data) 
+output_folder:
+	if not exist _bin (mkdir _bin) 
 
-wheel_simple: output_folders
+wheel_simple: output_folder
 	@echo --- Building wheel_simple
+	$(call Builder,examples\wheel_simple.cpp,wheel_simple)
+	move "wheel_simple.exe" _bin
 
 clean: 
-	if exist examples\_bin (rmdir /s /q examples\_bin examples\_data)
-	@echo --- Deleted binaries and output data
-
+	if exist _bin (rmdir /s /q _bin)
+	@echo --- Deleted binaries
