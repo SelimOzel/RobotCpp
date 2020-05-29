@@ -13,7 +13,11 @@ def main():
 
 	t = [] # [s]
 
-	with open('../_bin/wheel_output.csv') as csvfile:
+	# Pick one of the names as input
+	name1 = "../_bin/wheel_output.csv"
+	name2 = "../_bin/wheel_output_custom_controller.csv"
+	
+	with open(name1) as csvfile:
 		spamreader = csv.reader(csvfile)
 		for row in spamreader:
 			t.append(float(row[0])) 

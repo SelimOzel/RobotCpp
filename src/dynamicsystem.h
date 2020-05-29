@@ -83,6 +83,17 @@ public:
 		}
 	}
 
+	// Reset the system. Clears output vectors.
+	void Reset(std::vector<double>& resetState_IN, std::vector<double>& resetInput_IN)
+	{
+		_stateVector.clear();
+		_inputVector.clear();
+		_timeVector.clear();
+
+		for (size_t s = 0; s < _sLen; s++) _state[s] = resetState_IN[s];
+		for (size_t i = 0; i < _iLen; i++) _input[i] = resetInput_IN[i];	
+	}
+
 	// Export simulation csv file
 	void ExportCSV(char const* s)
 	{
