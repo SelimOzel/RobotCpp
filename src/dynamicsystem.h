@@ -24,6 +24,21 @@ public:
 		int sLen_IN, 
 		int iLen_IN)
 	{
+		try{
+			if(initialState_IN.size() != sLen_IN)
+			{
+				throw "Dynamic system cannot be created: state dimensions do not match.\n";
+			}
+			if(initialInput_IN.size() != iLen_IN)
+			{
+				throw "Dynamic system cannot be created: input dimensions do not match.\n";
+			}			
+		}
+		catch(char const* s)
+		{
+			std::cout<< s;
+		}
+
 		_sLen = sLen_IN;
 		_iLen = iLen_IN;
 

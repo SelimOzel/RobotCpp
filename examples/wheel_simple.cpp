@@ -20,8 +20,6 @@ std::vector<double> SpeedController(std::vector<double>& state_IN, std::vector<d
 
 int main()
 {
-	std::cout << "Robot Fundamentals: Wheel\n";
-
 	/* Inputs */
 	double v = 0.1;		// Wheel velocity [m/s]
 	double w = 0.0;		// Wheel angular speed in global frame [rad/s]
@@ -50,4 +48,6 @@ int main()
 	myWheel.SetController(&SpeedController); 	// Attach a custom controller
 	myWheel.Simulate();
 	myWheel.ExportCSV("wheel_output_custom_controller.csv");
+
+	std::cout << "wheel_simple: Completed\n";
 }
