@@ -1,9 +1,7 @@
 import matplotlib.pyplot as plt
 import csv
 
-def main():
-	print("Simple Wheel Plotter")
-
+def plotter(nameCSV_IN, nameFigure_IN):
 	xPos = [] # [m]
 	yPos = [] # [m]
 	angle = [] # [rad]
@@ -13,11 +11,7 @@ def main():
 
 	t = [] # [s]
 
-	# Pick one of the names as input
-	name1 = "../_bin/wheel_output.csv"
-	name2 = "../_bin/wheel_output_custom_controller.csv"
-	
-	with open(name1) as csvfile:
+	with open(nameCSV_IN) as csvfile:
 		spamreader = csv.reader(csvfile)
 		for row in spamreader:
 			t.append(float(row[0])) 
@@ -28,7 +22,7 @@ def main():
 			w.append(float(row[5]))
 
 	fig, ax = plt.subplots(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
-	fig.canvas.set_window_title('Simple Wheel - Movement in X Axis')
+	fig.canvas.set_window_title(nameFigure_IN)
 
 	plt.subplot(221)
 	plt.plot(xPos,yPos, 'r')
@@ -54,7 +48,11 @@ def main():
 	plt.ylabel('Angular Speed [rad/s]')
 	plt.grid()
 
-	plt.show()
+	plt.show()	
+
+def main():
+	plotter("../_bin/wheel_output.csv", "Simple Wheel - Movement in only X Axis")
+	plotter("../_bin/wheel_output_custom_controller.csv", "Simple Wheel - Movement in both axes")
 
 if __name__ == "__main__":
     main()
