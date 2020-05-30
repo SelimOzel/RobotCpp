@@ -17,9 +17,12 @@
 class dynamicsystem
 {
 public:
-	dynamicsystem(std::vector<double>& initialState_IN,
-	 std::vector<double>& initialInput_IN,
-	 std::vector<double>& time_IN, int sLen_IN, int iLen_IN)
+	dynamicsystem(
+		std::vector<double>& initialState_IN,
+	 	std::vector<double>& initialInput_IN,
+	 	std::vector<double>& time_IN, 
+		int sLen_IN, 
+		int iLen_IN)
 	{
 		_sLen = sLen_IN;
 		_iLen = iLen_IN;
@@ -35,10 +38,7 @@ public:
 	}
 
 	// Change the dynamic system controller
-	void SetController(const std::function< std::vector<double>(
-		std::vector<double>&,
-		std::vector<double>&,
-		double) >& newController_IN)
+	void SetController(const std::function<std::vector<double>(std::vector<double>&,std::vector<double>&,double)>& newController_IN)
 	{
 		_controller = newController_IN;
 	}
@@ -84,7 +84,8 @@ public:
 	}
 
 	// Reset the system. Clears output vectors.
-	void Reset(std::vector<double>& resetState_IN, std::vector<double>& resetInput_IN)
+	void Reset(std::vector<double>& resetState_IN, 
+		   std::vector<double>& resetInput_IN)
 	{
 		_stateVector.clear();
 		_inputVector.clear();
@@ -134,14 +135,15 @@ public:
 	}	
 
 protected:
-	// System Equations: only diff is protected
+	// System Equations: Only diff is protected
 	virtual std::vector<double> diff(				// Difference Equation. Defined in derived class.
 		std::vector<double>& state_IN, 
 		std::vector<double>& input_IN) = 0;		
 
 private:
-	// System Equations: rest are private
-	std::vector<double> integrator(std::vector<double>& state_IN,
+	// System Equations: Private
+	std::vector<double> integrator(
+		std::vector<double>& state_IN,
 		std::vector<double>& input_IN)				// Simple integrator
 	{
 		std::vector<double> s_next(_sLen);
@@ -150,10 +152,8 @@ private:
 		return s_next;
 	}
 
-	std::function<std::vector<double>(
-		std::vector<double>&, 
-		std::vector<double>&,
-		double)> _controller = NULL;				// Controller. Defined in derived class or outside in the main program.
+	// Controller: Defined in derived class or outside in the main program.
+	std::function<std::vector<double>(std::vector<double>&, std::vector<double>&, double)> _controller = NULL;				
 
 	// States & Inputs: current values
 	std::vector<double> _state;
