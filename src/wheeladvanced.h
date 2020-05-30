@@ -27,12 +27,21 @@ public:
 		return input_IN;
 	}
 
+	// Set Parameters
+	void SetParameters(double r_IN, double m_IN, double b_IN)
+	{
+		_r = r_IN;
+		_m = m_IN;
+		_I = 0.5*_m*_r*_r;
+		_b = b_IN;
+	}
+
 private:
 	// Advanced wheel parameters
 	double _r = 1.0;			// [m]
-	double _m = 0.5;			// [kg]			
+	double _m = 1.0;			// [kg]			
 	double _I = 0.5*_m*_r*_r;	// [kg*m^2]
-	double _b = 0.2;			// [kg*m^2/s]
+	double _b = 0.5;			// [kg*m^2/s]
 
 	std::vector<double> diff(std::vector<double>& state_IN, std::vector<double>& input_IN)
 	{

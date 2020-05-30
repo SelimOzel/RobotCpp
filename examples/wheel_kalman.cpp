@@ -6,7 +6,7 @@
 int main()
 {
 	/* Inputs */
-	double torque = 2.0; // Wheel torque [Nm]
+	double torque = 5.0; // Wheel torque [Nm]
 	double w = 5.0*(M_PI/180.0); // Wheel angular speed in global frame [rad/s]
 
 	/* State */
@@ -28,7 +28,13 @@ int main()
 	/* Wheel simulation & data extraction */
 	WheelAdvanced myWheel(state, input, time);
 	myWheel.Simulate();
-	myWheel.ExportCSV("wheel_kalman_constant_torque.csv");
+	myWheel.ExportCSV("wheel_1kg_kalman_constant_torque.csv");
+
+	/* Reset and start with a different mass*/ 
+	myWheel.Reset(state, input);
+	myWheel.SetParameters(1.0, 2.0, 0.5);
+	myWheel.Simulate();
+	myWheel.ExportCSV("wheel_2kg_kalman_constant_torque.csv");
 
 	std::cout << "wheel_kalman: Completed\n";
 	return 1;
