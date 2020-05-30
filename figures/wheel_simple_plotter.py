@@ -37,7 +37,7 @@ def plotter(nameCSV_IN, nameFigure_IN):
 	plt.grid()
 
 	plt.subplot(223)
-	plt.plot(t,v , 'g')
+	plt.plot(t,v , 'k')
 	plt.xlabel('Time [s]')
 	plt.ylabel('Speed [m/s]')
 	plt.grid()

@@ -29,10 +29,10 @@ public:
 
 private:
 	// Advanced wheel parameters
-	double _r = 0.1;			// [m]
+	double _r = 1.0;			// [m]
 	double _m = 0.5;			// [kg]			
 	double _I = 0.5*_m*_r*_r;	// [kg*m^2]
-	double _b = 0.1;			// [kg*m^2/s]
+	double _b = 0.2;			// [kg*m^2/s]
 
 	std::vector<double> diff(std::vector<double>& state_IN, std::vector<double>& input_IN)
 	{
@@ -41,7 +41,7 @@ private:
 		s_diff[1] = (input_IN[0]-_b*state_IN[1])/_I; // (Torque_IN-b*alpha_dot) / I_disk
 		s_diff[2] = cos(state_IN[4])*_r*state_IN[1]; // cos(theta)*r*alpha_dot
 		s_diff[3] = sin(state_IN[4])*_r*state_IN[1]; // sin(theta)*r*alpha_dot
-		s_diff[4] = state_IN[4]; // w 
+		s_diff[4] = input_IN[1]; // w 
 
 		return s_diff;
 	}

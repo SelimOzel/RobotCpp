@@ -50,4 +50,5 @@ int main()
 	myWheel.ExportCSV("wheel_output_custom_controller.csv");
 
 	std::cout << "wheel_simple: Completed\n";
+	return 1;
 }
