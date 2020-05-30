@@ -58,6 +58,11 @@ public:
 		_controller = newController_IN;
 	}
 
+	virtual void SetParameters()
+	{
+		std::cout << "SetParameters() needs to be defined at derived class.\n"; 
+	}
+
 	// Simulation
 	void Simulate()
 	{
