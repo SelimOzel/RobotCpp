@@ -10,82 +10,105 @@
 class Matrix
 {
 public:
-	// Constructor. 
-	Matrix(int nr, int nc)
-	{
-		if(nr >= 0 && nc >= 0)
-		{
-			_nr = nr;
-			_nc = nc;
+	// Constructor(s)
+	Matrix(){}
 
-			// All matrices shall be initialized with 1.0. 
-			for(int r = 0; r < nr; r++)
+	Matrix(unsigned nr, unsigned nc, double n)
+	{
+		reshape(nr, nc, n);
+	}
+
+	// Overloaded assignment for matrix inputs
+	Matrix operator= (const Matrix& m)
+	{
+		reshape(m._nr, m._nc, 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
 			{
-				std::vector<double> row;
-				for(int c = 0; c < nc; c++)
-				{
-					row.push_back(1.0);
-				}
-				_m.push_back(row);
-				row.clear();
+				_m[r][c] = m._m[r][c];
 			}
 		}
+		return *this;				
+	}
+
+	// Convenience for setting via 2D vectors.
+	// It is users responsiblity to verify all 
+	// rows are same size.
+	Matrix operator= (const std::vector<std::vector<double>>& m)
+	{
+		reshape(m.size(), m[0].size(), 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				_m[r][c] = m[r][c];
+			}
+		}
+		return *this;				
+	}
+
+	// Matrix sum: a + b 
+	Matrix operator+(const Matrix& b)
+	{
+		Matrix result(_nr, _nc, 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result._m[r][c] = _m[r][c] + b._m[r][c];
+			}
+		}
+		return result;
+	}
+
+	// Scalar sum: a + 1.25
+	Matrix operator+(double s)
+	{
+		Matrix result(_nr, _nc, 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result._m[r][c] = _m[r][c] + s;
+			}
+		}
+		return result;
+	}	
+
+	Matrix operator[] (unsigned r) 
+	{
+		return *this;
 	}
 
 	// Writes matrix to standard output
 	static void Print(const Matrix& m)
 	{
-		for(int r = 0; r < m._nr; r++)
+		for(unsigned r = 0; r < m._nr; r++)
 		{
-			for(int c = 0; c < m._nc; c++)
+			for(unsigned c = 0; c < m._nc; c++)
 			{
 				std::cout << m._m[r][c];
 				if(c == m._nc - 1) std::cout << "\n";
 				else std::cout << ", ";
 			}
 		}
-	}
-
-	Matrix operator= (const std::vector<std::vector<double>>& m)
-	{
-		std::cout<<"hi";
-		Matrix m_new(m.size(), m[0].size());
-		for(int r = 0; r < _nr; r++)
-		{
-			for(int c = 0; c < _nc; c++)
-			{std::cout<<m[r][c];
-				m_new._m[r][c] = m[r][c];
-			}
-		}
-		return m_new;				
-	}
-
-	Matrix operator[] (int r) 
-	{
-		return Matrix();
-	}
-
-	// Matrix sum: a + b 
-	Matrix operator+(const Matrix& b)
-	{
-		Matrix a(b._nr, b._nc);
-		for(int r = 0; r < _nr; r++)
-		{
-			for(int c = 0; c < _nc; c++)
-			{
-				a._m[r][c] += b._m[r][c];
-			}
-		}
-		return a;
-	}
+	}	
 
 private:
-	Matrix()
+	void reshape(unsigned r_IN, unsigned c_IN, double n_IN)
 	{
+		_m.resize(r_IN); 
+		for (unsigned r=0; r<_m.size(); r++) 
+		{
+			_m[r].resize(c_IN,n_IN);
+		}	
+		_nr = _m.size();
+		_nc = _m[0].size();
 	}
 
-	int _nr = 0;
-	int _nc = 0;
+	unsigned _nr = 0;
+	unsigned _nc = 0;
 
 	std::vector<std::vector<double>> _m;
 };
@@ -95,36 +118,32 @@ int main()
 	std::cout<< "Linear Algebra Tests:\n\n";
 	std::cout<< "Starting matrix tests...\n\n";
 
-	Matrix X1(0,0);
-	Matrix X2(-1,0);
-	std::cout<< "Constructer tests finished.\n\n";
 	
-	Matrix A(2,2);
-	std::vector<std::vector<double>> m = {{2,3},{4,5}};
-	A = m;
-	Matrix B(2,2);
-	Matrix C(1,1);
-
-	Matrix::Print(X1);
-	std::cout<< "Prints nothing.\n\n";
+	Matrix A(2, 2, 1.0); // Initialize all elements to 1.
 	Matrix::Print(A);
-	std::cout<< "2x2.\n\n";
-	Matrix A2(2,3);
-	Matrix A3(3,2);
-	Matrix::Print(A2);
-	std::cout<< "2x3.\n\n";
-	Matrix::Print(A3);	
-	std::cout<< "3x2.\n\n";
+	std::cout<<"A: 2x2\n\n";
 
-	
-	std::cout<< "A+A2 = "; 
-	C = A + A2;
-	std::cout<< "A+A3 = "; 
-	C = A + A3;
-	C = A + B;
+	A = {{2,3},{3,2}}; // Set elements
+	Matrix::Print(A);
+	std::cout<<"A: 2x2\n\n";
+
+	A = {{2,3},{3,2},{8,9}}; // Set elements and reshape
+	Matrix::Print(A);
+	std::cout<<"A: 3x2\n\n";
+
+	Matrix B; // A matrix can be created without initializing
+	B = {{3,2},{2,3},{2,1}}; // Set elements
+	Matrix C(3,2, 0.0);
+	C = B + A; // Matrix addition
 	Matrix::Print(C);
-	std::cout<< "+overload tests finished.\n\n";
+	std::cout<<"C: 3x2\n\n";
 
+	A = C; // Matrix assignment
+	Matrix::Print(A);
+	std::cout<<"A: 3x2\n\n";	
+
+	Matrix::Print(B);
+	std::cout<<"B: 3x2\n\n";
 
 	return 1;
 }
