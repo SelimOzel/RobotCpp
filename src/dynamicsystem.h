@@ -32,24 +32,25 @@ public:
 			if(initialInput_IN.size() != iLen_IN)
 			{
 				throw "Dynamic system cannot be created: input dimensions do not match.\n";
-			}			
+			}		
+
+			_sLen = sLen_IN;
+			_iLen = iLen_IN;
+
+			_state = std::vector<double>(_sLen);	
+			_input = std::vector<double>(_iLen);	
+
+			for (size_t s = 0; s < _sLen; s++) _state[s] = initialState_IN[s];
+			for (size_t i = 0; i < _iLen; i++) _input[i] = initialInput_IN[i];				
+
+			_dt = time_IN[0];
+			_ft = time_IN[1];
+
 		}
 		catch(char const* s)
 		{
 			std::cout<< s;
 		}
-
-		_sLen = sLen_IN;
-		_iLen = iLen_IN;
-
-		_state = std::vector<double>(_sLen);	
-		_input = std::vector<double>(_iLen);	
-
-		for (size_t s = 0; s < _sLen; s++) _state[s] = initialState_IN[s];
-		for (size_t i = 0; i < _iLen; i++) _input[i] = initialInput_IN[i];				
-
-		_dt = time_IN[0];
-		_ft = time_IN[1];
 	}
 
 	// Change the dynamic system controller

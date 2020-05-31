@@ -21,6 +21,10 @@ wheel_kalman: output_folder
 	$(call Builder,wheel_kalman,examples\wheel_kalman.cpp)
 	move "wheel_kalman.exe" _bin	
 
+linear_algebra:
+	@echo --- Building linear_algebra
+	$(call Builder,linearalgebra,src\linearalgebra.cpp)
+
 clean: 
 	if exist _bin (rmdir /s /q _bin)
 	@echo --- Deleted binaries
