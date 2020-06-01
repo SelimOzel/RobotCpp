@@ -47,7 +47,7 @@ public:
 		return *this;				
 	}
 
-	// Matrix sum: a + b 
+	// Matrix operations
 	Matrix operator+(const Matrix& b)
 	{
 		if(b._nr == _nr && b._nc == _nc)
@@ -66,23 +66,8 @@ public:
 		{
 			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
 		}		
-	}
-
-	// Scalar sum: a + 1.25
-	Matrix operator+(double s)
-	{
-		Matrix result(_nr, _nc, 0.0);
-		for(unsigned r = 0; r < _nr; r++)
-		{
-			for(unsigned c = 0; c < _nc; c++)
-			{
-				result._m[r][c] = _m[r][c] + s;
-			}
-		}
-		return result;
 	}	
 
-	// Cumulative matrix sum.
 	Matrix operator+= (const Matrix& b) 
 	{
 		if(b._nr == _nr && b._nc == _nc)
@@ -102,20 +87,6 @@ public:
 		}
 	}	
 
-	// Cumulative scalar sum.
-	Matrix operator+= (const double s) 
-	{
-		for(unsigned r = 0; r < _nr; r++)
-		{
-			for(unsigned c = 0; c < _nc; c++)
-			{
-				_m[r][c] += s;
-			}
-		}
-		return *this;
-	}	
-
-	// Matrix subtraction: a + b 
 	Matrix operator-(const Matrix& b)
 	{
 		if(b._nr == _nr && b._nc == _nc)
@@ -132,25 +103,10 @@ public:
 		}
 		else
 		{
-			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
+			throw std::runtime_error("Subtraction Error: Matrix sizes don't match.");
 		}		
 	}
 
-	// Scalar subtraction: a + 1.25
-	Matrix operator-(double s)
-	{
-		Matrix result(_nr, _nc, 0.0);
-		for(unsigned r = 0; r < _nr; r++)
-		{
-			for(unsigned c = 0; c < _nc; c++)
-			{
-				result._m[r][c] = _m[r][c] - s;
-			}
-		}
-		return result;
-	}	
-
-	// Cumulative matrix subtraction.
 	Matrix operator-= (const Matrix& b) 
 	{
 		if(b._nr == _nr && b._nc == _nc)
@@ -166,11 +122,74 @@ public:
 		}
 		else
 		{
-			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
+			throw std::runtime_error("Subtraction Error: Matrix sizes don't match.");
 		}
 	}	
 
-	// Cumulative scalar subtraction.
+	// Scalar Operations
+	Matrix operator+(double s)
+	{
+		Matrix result(_nr, _nc, 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result._m[r][c] = _m[r][c] + s;
+			}
+		}
+		return result;
+	}
+
+	Matrix operator+= (const double s) 
+	{
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				_m[r][c] += s;
+			}
+		}
+		return *this;
+	}	
+
+	Matrix operator*(double s)
+	{
+		Matrix result(_nr, _nc, 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result._m[r][c] = _m[r][c] * s;
+			}
+		}
+		return result;
+	}
+	
+	Matrix operator*= (const double s) 
+	{
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				_m[r][c] *= s;
+			}
+		}
+		return *this;
+	}		
+
+	Matrix operator-(double s)
+	{
+		Matrix result(_nr, _nc, 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result._m[r][c] = _m[r][c] - s;
+			}
+		}
+		return result;
+	}	
+
 	Matrix operator-= (const double s) 
 	{
 		for(unsigned r = 0; r < _nr; r++)
@@ -182,6 +201,31 @@ public:
 		}
 		return *this;
 	}
+
+	Matrix operator/(double s)
+	{
+		Matrix result(_nr, _nc, 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result._m[r][c] = _m[r][c] / s;
+			}
+		}
+		return result;
+	}	
+
+	Matrix operator/= (const double s) 
+	{
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				_m[r][c] /= s;
+			}
+		}
+		return *this;
+	}	
 
 	Matrix operator[] (unsigned r) 
 	{
@@ -245,7 +289,7 @@ int main()
 	Matrix::Print(A);
 	std::cout<<"\n";	
 
-	// Addition-Subtraction
+	// Addition-Subtraction-Multiplication-Division(scalar)
 	B = {{3,2},{2,3}};
 	A = {{2,3},{3,2}}; // Set elements
 	A += B; // cumulative matrix addition
