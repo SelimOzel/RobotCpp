@@ -38,7 +38,7 @@ public:
 		reshape(m.size(), m[0].size(), 0.0);
 		for(unsigned r = 0; r < _nr; r++)
 		{
-			if(m[r].size() != m[0].size()) throw std::runtime_error("Assignment Error: Uneven row lengths.");
+			if(m[r].size() != m[0].size()) throw std::runtime_error("Assignment Error: Uneven row lengths");
 			for(unsigned c = 0; c < _nc; c++)
 			{
 				_m[r][c] = m[r][c];
@@ -64,7 +64,7 @@ public:
 		}
 		else
 		{
-			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
+			throw std::runtime_error("Addition Error: size");
 		}		
 	}	
 
@@ -83,9 +83,53 @@ public:
 		}
 		else
 		{
-			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
+			throw std::runtime_error("Addition Error: size");
 		}
 	}	
+
+	Matrix operator*(const Matrix& b) 
+	{
+		unsigned br = b._nr;
+		unsigned bc = b._nc;
+		Matrix result(_nr, bc, 0.0);
+
+		// Verify mXn * nXp condition
+		if(_nc == br)
+		{
+			for (unsigned r = 0; r<_nr; r++) 
+			{
+				for (unsigned c = 0; c<bc; c++) 
+				{
+					for (unsigned k = 0; k<_nc; k++) 
+					{
+						result._m[r][c] += _m[r][k] * b._m[k][c];
+					}
+				}
+			}
+			return result;
+		}
+		else
+		{
+			throw std::runtime_error("Multiplication Error: size");
+		}
+	}
+
+	Matrix operator*=(const Matrix& b) 
+	{
+		unsigned br = b._nr;
+		// Verify mXn * nXp condition
+		if(_nc == br)
+		{
+			Matrix result = *this * b;
+			*this = result;
+			return *this;
+			return result;
+		}
+		else
+		{
+			throw std::runtime_error("Multiplication Error: size");
+		}
+	}
 
 	Matrix operator-(const Matrix& b)
 	{
@@ -103,7 +147,7 @@ public:
 		}
 		else
 		{
-			throw std::runtime_error("Subtraction Error: Matrix sizes don't match.");
+			throw std::runtime_error("Subtraction Error: size");
 		}		
 	}
 
@@ -122,7 +166,7 @@ public:
 		}
 		else
 		{
-			throw std::runtime_error("Subtraction Error: Matrix sizes don't match.");
+			throw std::runtime_error("Subtraction Error: size");
 		}
 	}	
 
@@ -227,9 +271,49 @@ public:
 		return *this;
 	}	
 
-	Matrix operator[] (unsigned r) 
+	Matrix operator[] (unsigned i) 
 	{
-		return *this;
+		//std::cout<<"[]\n";
+		// Special case for row vectors
+		if(_nr == 1)
+		{
+			if(i<_nc)
+			{
+				//std::cout<<"INdex\n";
+				//Print(*this);
+				Matrix d(1,1,_m[0][i]);
+				//d._m[i][0] = _m[i][0];
+				//std::cout<<_m[i][0] << " " << i << ", ";
+				return d;
+			}
+			else
+			{
+				throw std::runtime_error("Column index out of bounds");
+			}			
+		}
+
+		// Get row
+		if(i<_nr)
+		{
+			//std::cout<<"Vector\n";
+			Matrix result(1, _nc, 0.0);
+
+			for(int c = 0; c<_nc; c++)
+			{
+				result._m[0][c] = _m[i][c];
+			}
+
+			return result;
+		}
+		else
+		{
+			throw std::runtime_error("Row index out of bounds");
+		}
+	}
+
+	std::vector<std::vector<double>> Double()
+	{
+		return _m;
 	}
 
 	// Writes matrix to standard output
@@ -249,13 +333,20 @@ public:
 private:
 	void reshape(unsigned r_IN, unsigned c_IN, double n_IN)
 	{
-		_m.resize(r_IN); 
-		for (unsigned r=0; r<_m.size(); r++) 
+		if(r_IN != 0 && c_IN != 0)
 		{
-			_m[r].resize(c_IN,n_IN);
-		}	
-		_nr = _m.size();
-		_nc = _m[0].size();
+			_m.resize(r_IN); 
+			for (unsigned r=0; r<_m.size(); r++) 
+			{
+				_m[r].resize(c_IN,n_IN);
+			}	
+			_nr = _m.size();
+			_nc = _m[0].size();
+		}
+		else
+		{
+			throw std::runtime_error("Dimensions can't be zero");
+		}
 	}
 
 	unsigned _nr = 0;
@@ -302,6 +393,23 @@ int main()
 	A = A - 1; // cumulative scalar subtraction
 	Matrix::Print(A);
 	std::cout<<"\n";
+
+	A = {{3,2,1},{1,2,3},{0,1,2}}; // 3x3
+	B = {{3,2},{1,4},{1,5}}; // 3x2
+	Matrix::Print(A*B); // valid multiplication with 3x2 output. 
+	std::cout<<"\n";
+
+	Matrix::Print(B[2][1]);
+	std::cout<<"\n";
+
+	A *= B;
+	Matrix::Print(A);
+	std::cout<<"\n";
+
+	//Matrix::Print(A*B[0]);
+	//std::cout<<"\n";
+	//C = A*B[0];
+
 
 	return 1;
 }
