@@ -32,14 +32,13 @@ public:
 		return *this;				
 	}
 
-	// Convenience for setting via 2D vectors.
-	// It is users responsiblity to verify all 
-	// rows are same size.
+	// Convenience for setting via inline 2D vectors.
 	Matrix operator= (const std::vector<std::vector<double>>& m)
 	{
 		reshape(m.size(), m[0].size(), 0.0);
 		for(unsigned r = 0; r < _nr; r++)
 		{
+			if(m[r].size() != m[0].size()) throw std::runtime_error("Assignment Error: Uneven row lengths.");
 			for(unsigned c = 0; c < _nc; c++)
 			{
 				_m[r][c] = m[r][c];
@@ -51,15 +50,22 @@ public:
 	// Matrix sum: a + b 
 	Matrix operator+(const Matrix& b)
 	{
-		Matrix result(_nr, _nc, 0.0);
-		for(unsigned r = 0; r < _nr; r++)
-		{
-			for(unsigned c = 0; c < _nc; c++)
+		if(b._nr == _nr && b._nc == _nc)
+		{		
+			Matrix result(_nr, _nc, 0.0);
+			for(unsigned r = 0; r < _nr; r++)
 			{
-				result._m[r][c] = _m[r][c] + b._m[r][c];
+				for(unsigned c = 0; c < _nc; c++)
+				{
+					result._m[r][c] = _m[r][c] + b._m[r][c];
+				}
 			}
+			return result;
 		}
-		return result;
+		else
+		{
+			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
+		}		
 	}
 
 	// Scalar sum: a + 1.25
@@ -75,6 +81,107 @@ public:
 		}
 		return result;
 	}	
+
+	// Cumulative matrix sum.
+	Matrix operator+= (const Matrix& b) 
+	{
+		if(b._nr == _nr && b._nc == _nc)
+		{
+			for(unsigned r = 0; r < _nr; r++)
+			{
+				for(unsigned c = 0; c < _nc; c++)
+				{
+					_m[r][c] += b._m[r][c];
+				}
+			}
+			return *this;
+		}
+		else
+		{
+			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
+		}
+	}	
+
+	// Cumulative scalar sum.
+	Matrix operator+= (const double s) 
+	{
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				_m[r][c] += s;
+			}
+		}
+		return *this;
+	}	
+
+	// Matrix subtraction: a + b 
+	Matrix operator-(const Matrix& b)
+	{
+		if(b._nr == _nr && b._nc == _nc)
+		{		
+			Matrix result(_nr, _nc, 0.0);
+			for(unsigned r = 0; r < _nr; r++)
+			{
+				for(unsigned c = 0; c < _nc; c++)
+				{
+					result._m[r][c] = _m[r][c] - b._m[r][c];
+				}
+			}
+			return result;
+		}
+		else
+		{
+			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
+		}		
+	}
+
+	// Scalar subtraction: a + 1.25
+	Matrix operator-(double s)
+	{
+		Matrix result(_nr, _nc, 0.0);
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result._m[r][c] = _m[r][c] - s;
+			}
+		}
+		return result;
+	}	
+
+	// Cumulative matrix subtraction.
+	Matrix operator-= (const Matrix& b) 
+	{
+		if(b._nr == _nr && b._nc == _nc)
+		{
+			for(unsigned r = 0; r < _nr; r++)
+			{
+				for(unsigned c = 0; c < _nc; c++)
+				{
+					_m[r][c] -= b._m[r][c];
+				}
+			}
+			return *this;
+		}
+		else
+		{
+			throw std::runtime_error("Addition Error: Matrix sizes don't match.");
+		}
+	}	
+
+	// Cumulative scalar subtraction.
+	Matrix operator-= (const double s) 
+	{
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				_m[r][c] -= s;
+			}
+		}
+		return *this;
+	}
 
 	Matrix operator[] (unsigned r) 
 	{
@@ -118,32 +225,39 @@ int main()
 	std::cout<< "Linear Algebra Tests:\n\n";
 	std::cout<< "Starting matrix tests...\n\n";
 
-	
+	// Assignment and creator operations
 	Matrix A(2, 2, 1.0); // Initialize all elements to 1.
-	Matrix::Print(A);
-	std::cout<<"A: 2x2\n\n";
-
 	A = {{2,3},{3,2}}; // Set elements
 	Matrix::Print(A);
-	std::cout<<"A: 2x2\n\n";
+	std::cout<<"\n";
 
-	A = {{2,3},{3,2},{8,9}}; // Set elements and reshape
-	Matrix::Print(A);
-	std::cout<<"A: 3x2\n\n";
+	A = {{7,8},{8,7},{8,9}}; // Set elements and reshape
+	std::cout<<"\n";
 
 	Matrix B; // A matrix can be created without initializing
 	B = {{3,2},{2,3},{2,1}}; // Set elements
-	Matrix C(3,2, 0.0);
+	Matrix C;
 	C = B + A; // Matrix addition
 	Matrix::Print(C);
-	std::cout<<"C: 3x2\n\n";
+	std::cout<<"\n";
 
 	A = C; // Matrix assignment
 	Matrix::Print(A);
-	std::cout<<"A: 3x2\n\n";	
+	std::cout<<"\n";	
 
-	Matrix::Print(B);
-	std::cout<<"B: 3x2\n\n";
+	// Addition-Subtraction
+	B = {{3,2},{2,3}};
+	A = {{2,3},{3,2}}; // Set elements
+	A += B; // cumulative matrix addition
+	A += 1;	// cumulative scalar addition
+	Matrix::Print(A);
+	std::cout<<"\n";
+
+	A -= 1; // cumulative matrix subtraction
+	A = A - B; // matrix subtraction
+	A = A - 1; // cumulative scalar subtraction
+	Matrix::Print(A);
+	std::cout<<"\n";
 
 	return 1;
 }
