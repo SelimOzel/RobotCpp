@@ -21,9 +21,9 @@ wheel_kalman: output_folder
 	$(call Builder,wheel_kalman,examples\wheel_kalman.cpp)
 	move "wheel_kalman.exe" _bin	
 
-linear_algebra:
-	@echo --- Building linear_algebra
-	$(call Builder,linearalgebra,src\linearalgebra.cpp)
+matrix_test:
+	@echo --- Building matrix_test
+	$(call Builder,matrix_test,src\matrix_test.cpp)
 
 clean: 
 	if exist _bin (rmdir /s /q _bin)
