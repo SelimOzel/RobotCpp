@@ -1,5 +1,5 @@
-// I/O Stream
-#include <iostream>
+// Lightweight linear algebra tools
+#include "linearalgebra.h"
 
 // Writing to csv file.
 #include <fstream>
@@ -9,9 +9,6 @@
 
 // Used for passing controller to robot instances
 #include <functional>
-
-// Vector containing all sorts of system variables
-#include <vector>
 
 // Base class for all dynamic systems
 class dynamicsystem
