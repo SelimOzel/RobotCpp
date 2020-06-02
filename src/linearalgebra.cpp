@@ -4,15 +4,17 @@
 // Vector
 #include <vector>
 
+// Unit testing
+#include <cassert>
+
 // Lightweight linear algebra class to accompany RobotCpp
 
-// Matrix operations
+// Matrix
 class Matrix
 {
 public:
 	// Constructor(s)
 	Matrix(){}
-
 	Matrix(unsigned nr, unsigned nc, double n)
 	{
 		reshape(nr, nc, n);
@@ -47,8 +49,8 @@ public:
 		return *this;				
 	}
 
-	// Matrix operations
-	Matrix operator+(const Matrix& b)
+	// Matrix addition
+	Matrix operator+(const Matrix& b) const
 	{
 		if(b._nr == _nr && b._nc == _nc)
 		{		
@@ -68,18 +70,14 @@ public:
 		}		
 	}	
 
+	// Matrix cum. addition
 	Matrix operator+= (const Matrix& b) 
 	{
 		if(b._nr == _nr && b._nc == _nc)
 		{
-			for(unsigned r = 0; r < _nr; r++)
-			{
-				for(unsigned c = 0; c < _nc; c++)
-				{
-					_m[r][c] += b._m[r][c];
-				}
-			}
-			return *this;
+			Matrix result = *this + b;
+			*this = result;
+			return *this;			
 		}
 		else
 		{
@@ -87,7 +85,8 @@ public:
 		}
 	}	
 
-	Matrix operator*(const Matrix& b) 
+	// Matrix multiplication
+	Matrix operator*(const Matrix& b) const
 	{
 		unsigned br = b._nr;
 		unsigned bc = b._nc;
@@ -114,6 +113,7 @@ public:
 		}
 	}
 
+	// Matrix cum. multiplication
 	Matrix operator*=(const Matrix& b) 
 	{
 		unsigned br = b._nr;
@@ -123,7 +123,6 @@ public:
 			Matrix result = *this * b;
 			*this = result;
 			return *this;
-			return result;
 		}
 		else
 		{
@@ -131,7 +130,8 @@ public:
 		}
 	}
 
-	Matrix operator-(const Matrix& b)
+	// Matrix subtraction
+	Matrix operator-(const Matrix& b) const
 	{
 		if(b._nr == _nr && b._nc == _nc)
 		{		
@@ -151,18 +151,14 @@ public:
 		}		
 	}
 
+	// Matrix cum. subtraction
 	Matrix operator-= (const Matrix& b) 
 	{
 		if(b._nr == _nr && b._nc == _nc)
 		{
-			for(unsigned r = 0; r < _nr; r++)
-			{
-				for(unsigned c = 0; c < _nc; c++)
-				{
-					_m[r][c] -= b._m[r][c];
-				}
-			}
-			return *this;
+			Matrix result = *this - b;
+			*this = result;
+			return *this;	
 		}
 		else
 		{
@@ -170,8 +166,8 @@ public:
 		}
 	}	
 
-	// Scalar Operations
-	Matrix operator+(double s)
+	// Scalar sum
+	Matrix operator+(double s) const
 	{
 		Matrix result(_nr, _nc, 0.0);
 		for(unsigned r = 0; r < _nr; r++)
@@ -184,19 +180,16 @@ public:
 		return result;
 	}
 
+	// Scalar cum. sum
 	Matrix operator+= (const double s) 
 	{
-		for(unsigned r = 0; r < _nr; r++)
-		{
-			for(unsigned c = 0; c < _nc; c++)
-			{
-				_m[r][c] += s;
-			}
-		}
-		return *this;
+		Matrix result = *this + s;
+		*this = result;
+		return *this;	
 	}	
 
-	Matrix operator*(double s)
+	// Scalar multiply
+	Matrix operator*(double s) const
 	{
 		Matrix result(_nr, _nc, 0.0);
 		for(unsigned r = 0; r < _nr; r++)
@@ -209,19 +202,16 @@ public:
 		return result;
 	}
 	
+	// Scalar cum. multiply
 	Matrix operator*= (const double s) 
 	{
-		for(unsigned r = 0; r < _nr; r++)
-		{
-			for(unsigned c = 0; c < _nc; c++)
-			{
-				_m[r][c] *= s;
-			}
-		}
-		return *this;
+		Matrix result = *this * s;
+		*this = result;
+		return *this;	
 	}		
 
-	Matrix operator-(double s)
+	// Scalar subtraction
+	Matrix operator-(double s) const
 	{
 		Matrix result(_nr, _nc, 0.0);
 		for(unsigned r = 0; r < _nr; r++)
@@ -234,19 +224,16 @@ public:
 		return result;
 	}	
 
+	// Scalar cum. subtraction
 	Matrix operator-= (const double s) 
 	{
-		for(unsigned r = 0; r < _nr; r++)
-		{
-			for(unsigned c = 0; c < _nc; c++)
-			{
-				_m[r][c] -= s;
-			}
-		}
-		return *this;
+		Matrix result = *this - s;
+		*this = result;
+		return *this;	
 	}
 
-	Matrix operator/(double s)
+	// Scalar division
+	Matrix operator/(double s) const
 	{
 		Matrix result(_nr, _nc, 0.0);
 		for(unsigned r = 0; r < _nr; r++)
@@ -259,31 +246,24 @@ public:
 		return result;
 	}	
 
+	// Scalar cum. division
 	Matrix operator/= (const double s) 
 	{
-		for(unsigned r = 0; r < _nr; r++)
-		{
-			for(unsigned c = 0; c < _nc; c++)
-			{
-				_m[r][c] /= s;
-			}
-		}
-		return *this;
+		Matrix result = *this / s;
+		*this = result;
+		return *this;	
 	}	
 
-	Matrix operator[] (unsigned i) 
+	// Single [r] accesses a row, double [r][c] accesses an element 
+	// IMPORTANT: This overload returns Matrix; not, vector, not double ...
+	Matrix operator[] (unsigned i) const
 	{
-		//std::cout<<"[]\n";
 		// Special case for row vectors
 		if(_nr == 1)
 		{
 			if(i<_nc)
 			{
-				//std::cout<<"INdex\n";
-				//Print(*this);
 				Matrix d(1,1,_m[0][i]);
-				//d._m[i][0] = _m[i][0];
-				//std::cout<<_m[i][0] << " " << i << ", ";
 				return d;
 			}
 			else
@@ -295,9 +275,7 @@ public:
 		// Get row
 		if(i<_nr)
 		{
-			//std::cout<<"Vector\n";
 			Matrix result(1, _nc, 0.0);
-
 			for(int c = 0; c<_nc; c++)
 			{
 				result._m[0][c] = _m[i][c];
@@ -311,9 +289,90 @@ public:
 		}
 	}
 
-	std::vector<std::vector<double>> Double()
+	// Checks if matrices are equal
+	bool operator== (const Matrix &m) const
+	{
+		if(_nr != m.Size()[0]) return false;
+		if(_nc != m.Size()[1]) return false;
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				if(m(r,c) != _m[r][c]) false;
+			}
+		}
+		return true;
+	}
+
+	// Returns row at (r) as std::vector<std::vector<double>>
+	std::vector<std::vector<double>> operator() () const
 	{
 		return _m;
+	}
+
+	// Returns row at (r) as std::vector<double>
+	std::vector<double> operator() (unsigned r) const
+	{
+		return _m[r];
+	}
+
+	// Returns value at (r,c) as double
+	double operator() (unsigned r, unsigned c) const
+	{
+		return _m[r][c];
+	}
+
+	// Sums all elements
+	double Sum() const
+	{
+		double result = 0.0;
+		for(unsigned r = 0; r < _nr; r++)
+		{
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result += _m[r][c];
+			}
+		}
+		return result;		
+	}
+
+	// Sums all elements in row r.
+	double Sum(unsigned r) const
+	{
+		if(r < _nr)
+		{
+			double result = 0.0;
+			for(unsigned c = 0; c < _nc; c++)
+			{
+				result += _m[r][c];
+			}
+			return result;	
+		}
+		else
+		{
+			throw std::runtime_error("Sum Row Error: index out of bounds");
+		}
+	}	
+
+	// Return transpose of nXm matrix. Result is mXn.
+	Matrix T() const
+	{
+		std::vector<std::vector<double>> result(_nc, std::vector<double>(_nr));
+		Matrix resultM(_nc, _nr, 0.0);
+		for (unsigned r=0; r<resultM.Size()[0]; r++) 
+		{
+			for (unsigned c=0; c<resultM.Size()[1]; c++) 
+			{
+				resultM._m[r][c] = _m[c][r];
+			}
+		}
+		return resultM;
+	}
+
+	// Returns size as [r, c]
+	std::vector<unsigned> Size() const
+	{
+		return {_nr, _nc};
 	}
 
 	// Writes matrix to standard output
@@ -340,8 +399,8 @@ private:
 			{
 				_m[r].resize(c_IN,n_IN);
 			}	
-			_nr = _m.size();
-			_nc = _m[0].size();
+			_nr = r_IN;
+			_nc = c_IN;
 		}
 		else
 		{
@@ -363,52 +422,71 @@ int main()
 	// Assignment and creator operations
 	Matrix A(2, 2, 1.0); // Initialize all elements to 1.
 	A = {{2,3},{3,2}}; // Set elements
+	assert(A.Size()[0] == 2 && A.Size()[1] == 2);
+
 	Matrix::Print(A);
 	std::cout<<"\n";
 
 	A = {{7,8},{8,7},{8,9}}; // Set elements and reshape
-	std::cout<<"\n";
+	assert(A.Size()[0] == 3 && A.Size()[1] == 2);
 
 	Matrix B; // A matrix can be created without initializing
 	B = {{3,2},{2,3},{2,1}}; // Set elements
+	assert(B.Size()[0] == 3 && B.Size()[1] == 2);
+
 	Matrix C;
 	C = B + A; // Matrix addition
+	assert(C.Size()[0] == 3 && C.Size()[1] == 2);
+	assert(C.Sum() == 60);
+	assert(C.Sum(0) == 20);
+	assert(C.Sum(1) == 20);
+	assert(C.Sum(2) == 20);
+
 	Matrix::Print(C);
 	std::cout<<"\n";
 
-	A = C; // Matrix assignment
-	Matrix::Print(A);
-	std::cout<<"\n";	
+	A = C; // Matrix assignment	
+	assert(A.Size()[0] == 3 && A.Size()[1] == 2);
 
 	// Addition-Subtraction-Multiplication-Division(scalar)
 	B = {{3,2},{2,3}};
 	A = {{2,3},{3,2}}; // Set elements
+	assert(A.Size()[0] == B.Size()[0] && A.Size()[1] == B.Size()[1]);
+	
 	A += B; // cumulative matrix addition
 	A += 1;	// cumulative scalar addition
-	Matrix::Print(A);
-	std::cout<<"\n";
+	assert(A.Sum(0) + A.Sum(1) == A.Sum() && A.Sum() == 24);
 
 	A -= 1; // cumulative matrix subtraction
 	A = A - B; // matrix subtraction
 	A = A - 1; // cumulative scalar subtraction
-	Matrix::Print(A);
-	std::cout<<"\n";
+	assert(A.Sum(0) + A.Sum(1) == A.Sum() && A.Sum() == 6);
 
 	A = {{3,2,1},{1,2,3},{0,1,2}}; // 3x3
 	B = {{3,2},{1,4},{1,5}}; // 3x2
-	Matrix::Print(A*B); // valid multiplication with 3x2 output. 
-	std::cout<<"\n";
-
-	Matrix::Print(B[2][1]);
-	std::cout<<"\n";
-
 	A *= B;
+	B = A.T();
+	assert(A(0,0) + A(0,1) == A.Sum(0));
+	assert(A(1,0) + A(1,1) == A.Sum(1));
+	assert(A(2,0) + A(2,1) == A.Sum(2)); // row sum verifications
+	assert(A.Sum() == A.Sum(0)+A.Sum(1)+A.Sum(2)); // row sum equals all element sum	
+	assert(B.T() == A);
+
 	Matrix::Print(A);
+	std::cout<<"\n";	
+
+	Matrix::Print(B[0].T()); // {12,8,3}
 	std::cout<<"\n";
 
-	//Matrix::Print(A*B[0]);
-	//std::cout<<"\n";
-	//C = A*B[0];
+	C = B[0].T(); // Convert a row to column vector
+	A = {{{2,0,1}},{{0,2,1}}}; 
+	assert(A*B[0].T() == A*C);
+
+	std::cout<< "n: " << A.Size()[0] << " m:" << A.Size()[1] << "\n";
+	std::cout<< "n: " << C.Size()[0] << " m:" << C.Size()[1] << "\n\n";
+	Matrix::Print(A*B[0].T()); // Convert B to column vector and multiply with 2x3 matrix. 
+	
+	std::cout<<"\n";
 
 
 	return 1;
