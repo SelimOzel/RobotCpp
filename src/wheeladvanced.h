@@ -1,3 +1,12 @@
+/*
+██████╗  ██████╗ ██████╗  ██████╗ ████████╗ ██████╗██████╗ ██████╗ 
+██╔══██╗██╔═══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██╔══██╗██╔══██╗
+██████╔╝██║   ██║██████╔╝██║   ██║   ██║   ██║     ██████╔╝██████╔╝
+██╔══██╗██║   ██║██╔══██╗██║   ██║   ██║   ██║     ██╔═══╝ ██╔═══╝ 
+██║  ██║╚██████╔╝██████╔╝╚██████╔╝   ██║   ╚██████╗██║     ██║     
+╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝    ╚═╝    ╚═════╝╚═╝     ╚═╝                                                                   
+*/
+
 // Wheel advanced is derived from dynamic system
 #include "dynamicsystem.h"
 
@@ -8,15 +17,8 @@ class WheelAdvanced : public dynamicsystem
 {
 public:
 	// Default constructor with custom initial settings
-	WheelAdvanced(
-		Matrix& initialState_IN, 
-		Matrix& initialInput_IN, 
-		std::vector<double>& time_IN) : dynamicsystem(
-			initialState_IN, 
-			initialInput_IN, 
-			time_IN, 
-			NUMBEROFSTATES, 
-			NUMBEROFINPUTS)
+	WheelAdvanced(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN) : 
+	dynamicsystem(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
 	{
 		SetController(&ConstantTorqueController);
 	}

@@ -1,17 +1,20 @@
+/*
+██████╗  ██████╗ ██████╗  ██████╗ ████████╗ ██████╗██████╗ ██████╗ 
+██╔══██╗██╔═══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██╔══██╗██╔══██╗
+██████╔╝██║   ██║██████╔╝██║   ██║   ██║   ██║     ██████╔╝██████╔╝
+██╔══██╗██║   ██║██╔══██╗██║   ██║   ██║   ██║     ██╔═══╝ ██╔═══╝ 
+██║  ██║╚██████╔╝██████╔╝╚██████╔╝   ██║   ╚██████╗██║     ██║     
+╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝    ╚═╝    ╚═════╝╚═╝     ╚═╝                                                                   
+*/
+
 #ifndef __LINEARALGEBRA_H
 #define __LINEARALGEBRA_H
 
-// I/O Stream
-#include <iostream>
-
-// Vector
-#include <vector>
-
-// Unit testing
-#include <cassert>
+#include <iostream> // I/O Stream
+#include <vector> // Vector
+#include <cassert> // Unit testing
 
 // Lightweight linear algebra class to accompany RobotCpp
-
 // Matrix
 class Matrix
 {
