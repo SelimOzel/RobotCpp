@@ -9,8 +9,8 @@ class WheelAdvanced : public dynamicsystem
 public:
 	// Default constructor with custom initial settings
 	WheelAdvanced(
-		std::vector<double>& initialState_IN, 
-		std::vector<double>& initialInput_IN, 
+		Matrix& initialState_IN, 
+		Matrix& initialInput_IN, 
 		std::vector<double>& time_IN) : dynamicsystem(
 			initialState_IN, 
 			initialInput_IN, 
@@ -22,7 +22,7 @@ public:
 	}
 
 	// Default controller: same speed
-	static std::vector<double> ConstantTorqueController(std::vector<double>& state_IN, std::vector<double>& input_IN, double time_IN)
+	static Matrix ConstantTorqueController(Matrix& state_IN, Matrix& input_IN, double time_IN)
 	{
 		return input_IN;
 	}
@@ -43,15 +43,18 @@ private:
 	double _I = 0.5*_m*_r*_r;	// [kg*m^2]
 	double _b = 0.5;			// [kg*m^2/s]
 
-	std::vector<double> diff(std::vector<double>& state_IN, std::vector<double>& input_IN)
+	Matrix diff(Matrix& state_IN, Matrix& input_IN)
 	{
-		std::vector<double> s_diff(NUMBEROFSTATES);
-		s_diff[0] = state_IN[1]; // alpha_dot
-		s_diff[1] = (input_IN[0]-_b*state_IN[1])/_I; // (Torque_IN-b*alpha_dot) / I_disk
-		s_diff[2] = cos(state_IN[4])*_r*state_IN[1]; // cos(theta)*r*alpha_dot
-		s_diff[3] = sin(state_IN[4])*_r*state_IN[1]; // sin(theta)*r*alpha_dot
-		s_diff[4] = input_IN[1]; // w 
-
+		// Advanced wheel equations of motion
+		Matrix s_diff;
+		s_diff = std::vector<double>
+		{
+			state_IN(1,0), // alpha_dot
+			(input_IN(0,0)-_b*state_IN(1,0))/_I, // (Torque_IN-b*alpha_dot) / I_disk
+			cos(state_IN(3,0))*_r*state_IN(1,0), // cos(theta)*r*alpha_dot
+			sin(state_IN(3,0))*_r*state_IN(1,0), // sin(theta)*r*alpha_dot
+			input_IN(1,0) // w 
+		};
 		return s_diff;
 	}
 };

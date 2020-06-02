@@ -16,11 +16,11 @@ int main()
 	A = {{7,8},{8,7},{8,9}}; // Set elements and reshape
 	assert(A.Size()[0] == 3 && A.Size()[1] == 2);
 
-	Matrix B; // A matrix can be created without initializing
+	Matrix B(3, 2, 0.0); 
 	B = {{3,2},{2,3},{2,1}}; // Set elements
 	assert(B.Size()[0] == 3 && B.Size()[1] == 2);
 
-	Matrix C;
+	Matrix C(1, 1, 0.0); // Size can be easily changed later on
 	C = B + A; // Matrix addition
 	assert(C.Size()[0] == 3 && C.Size()[1] == 2);
 	assert(C.Sum() == 60);
@@ -68,10 +68,22 @@ int main()
 	A = {{{2,0,1}},{{0,2,1}}}; 
 	assert(A*B[0].T() == A*C);
 
-	std::cout<< "n: " << A.Size()[0] << " m:" << A.Size()[1] << "\n";
-	std::cout<< "n: " << C.Size()[0] << " m:" << C.Size()[1] << "\n\n";
+	Matrix::Size(A);
+	Matrix::Size(C);
 	Matrix::Print(A*B[0].T()); // Convert B to column vector and multiply with 2x3 matrix. 
 	std::cout<<"\n";
+
+	Matrix state(3, 1, 0.0);
+	state = std::vector<double> {2,2,2}; // I STRONGLY suggest using this convention WHEN declaring column vectors.
+	Matrix::Size(state);
+	C = A*state;
+
+	Matrix D(std::vector<double> {2,2,2}); // Vector based constructor tests. 
+	assert(state == D);
+	assert (D.Size()[0] == 3 && D.Size()[1] == 1);
+	assert(D(0,0) == 2 && D(1,0) == 2 && D(0,0) == 2);
+	Matrix E(std::vector<std::vector<double>> {{2,0,1},{0,2,1}});
+	assert(A == E);
 
 	std::cout<< "Matrix tests passed!\n";
 	return 1;

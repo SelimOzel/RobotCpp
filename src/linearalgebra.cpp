@@ -4,6 +4,29 @@
 #include "linearalgebra.h"
 
 Matrix::Matrix(){}
+
+Matrix::Matrix(const std::vector<double>& m)
+{
+	reshape(m.size(), 1, 0.0);
+	for(unsigned r = 0; r < _nr; r++)
+	{
+		_m[r][0] = m[r];
+	}		
+}
+
+Matrix::Matrix(const std::vector<std::vector<double>>& m)
+{
+	reshape(m.size(), m[0].size(), 0.0);
+	for(unsigned r = 0; r < _nr; r++)
+	{
+		if(m[r].size() != m[0].size()) throw std::runtime_error("Assignment Error: Uneven row lengths");
+		for(unsigned c = 0; c < _nc; c++)
+		{
+			_m[r][c] = m[r][c];
+		}
+	}	
+}
+
 Matrix::Matrix(unsigned nr, unsigned nc, double n)
 {
 	reshape(nr, nc, n);
@@ -20,6 +43,16 @@ Matrix Matrix::operator=(const Matrix& m)
 		}
 	}
 	return *this;				
+}
+
+Matrix Matrix::operator=(const std::vector<double>& m)
+{
+	reshape(m.size(), 1, 0.0);
+	for(unsigned r = 0; r < _nr; r++)
+	{
+		_m[r][0] = m[r];
+	}	
+	return *this;		
 }
 
 Matrix Matrix::operator=(const std::vector<std::vector<double>>& m)
@@ -282,12 +315,26 @@ std::vector<std::vector<double>> Matrix::operator() () const
 
 std::vector<double> Matrix::operator() (unsigned r) const
 {
-	return _m[r];
+	if(r<_nr)
+	{
+		return _m[r]; 
+	}
+	else
+	{
+		throw "Element Access Error: index out of bounds\n";
+	}
 }
 
 double Matrix::operator() (unsigned r, unsigned c) const
 {
-	return _m[r][c];
+	if(r<_nr && c<_nc)
+	{
+		return _m[r][c]; 
+	}
+	else
+	{
+		throw "Element Access Error: index out of bounds\n";
+	}	
 }
 
 double Matrix::Sum() const
@@ -337,6 +384,11 @@ Matrix Matrix::T() const
 std::vector<unsigned> Matrix::Size() const
 {
 	return {_nr, _nc};
+}
+
+void Matrix::Size(const Matrix& m)
+{
+	std::cout<< "Rows: " << m.Size()[0] << " Columns:" << m.Size()[1] << "\n";
 }
 
 void Matrix::Print(const Matrix& m)

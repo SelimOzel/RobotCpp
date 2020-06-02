@@ -18,10 +18,15 @@ class Matrix
 public:
 	// Constructor(s)
 	Matrix();
+	Matrix(const std::vector<double>& m);
+	Matrix(const std::vector<std::vector<double>>& m);
 	Matrix(unsigned nr, unsigned nc, double n);
 
 	// Overloaded assignment for matrix inputs
 	Matrix operator=(const Matrix& m);
+
+	// Convenience for setting via inline 1D column vectors.
+	Matrix operator=(const std::vector<double>& m);
 
 	// Convenience for setting via inline 2D vectors.
 	Matrix operator=(const std::vector<std::vector<double>>& m);
@@ -95,6 +100,9 @@ public:
 
 	// Returns size as [r, c]
 	std::vector<unsigned> Size() const;
+
+	// Utility function to print size to standard output
+	static void Size(const Matrix& m);	
 
 	// Writes matrix to standard output
 	static void Print(const Matrix& m);	

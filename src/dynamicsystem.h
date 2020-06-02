@@ -15,18 +15,18 @@ class dynamicsystem
 {
 public:
 	dynamicsystem(
-		std::vector<double>& initialState_IN,
-	 	std::vector<double>& initialInput_IN,
+		Matrix& initialState_IN,
+	 	Matrix& initialInput_IN,
 	 	std::vector<double>& time_IN, 
 		int sLen_IN, 
 		int iLen_IN)
 	{
 		try{
-			if(initialState_IN.size() != sLen_IN)
+			if(initialState_IN.Size()[0] != sLen_IN)
 			{
 				throw "Dynamic system cannot be created: state dimensions do not match.\n";
 			}
-			if(initialInput_IN.size() != iLen_IN)
+			if(initialInput_IN.Size()[0] != iLen_IN)
 			{
 				throw "Dynamic system cannot be created: input dimensions do not match.\n";
 			}		
@@ -34,11 +34,8 @@ public:
 			_sLen = sLen_IN;
 			_iLen = iLen_IN;
 
-			_state = std::vector<double>(_sLen);	
-			_input = std::vector<double>(_iLen);	
-
-			for (size_t s = 0; s < _sLen; s++) _state[s] = initialState_IN[s];
-			for (size_t i = 0; i < _iLen; i++) _input[i] = initialInput_IN[i];				
+			_state = initialState_IN;	
+			_input = initialInput_IN;				
 
 			_dt = time_IN[0];
 			_ft = time_IN[1];
@@ -51,7 +48,8 @@ public:
 	}
 
 	// Change the dynamic system controller
-	void SetController(const std::function<std::vector<double>(std::vector<double>&,std::vector<double>&,double)>& newController_IN)
+	//void SetController(const std::function<std::vector<double>(std::vector<double>&,std::vector<double>&,double)>& newController_IN)
+	void SetController(const std::function<Matrix(Matrix&,Matrix&,double)>& newController_IN)
 	{
 		_controller = newController_IN;
 	}
@@ -102,15 +100,16 @@ public:
 	}
 
 	// Reset the system. Clears output vectors.
-	void Reset(std::vector<double>& resetState_IN, 
-		   std::vector<double>& resetInput_IN)
+	void Reset(
+		Matrix& resetState_IN, 
+		Matrix& resetInput_IN)
 	{
 		_stateVector.clear();
 		_inputVector.clear();
 		_timeVector.clear();
 
-		for (size_t s = 0; s < _sLen; s++) _state[s] = resetState_IN[s];
-		for (size_t i = 0; i < _iLen; i++) _input[i] = resetInput_IN[i];	
+		_state = resetState_IN;
+		_input = resetInput_IN;	
 	}
 
 	// Export simulation csv file
@@ -123,22 +122,25 @@ public:
 				for(size_t r = 0; r<_timeVector.size(); r++)
 				{
 					output_file << _timeVector[r] << ", ";
-					for(double& s: _stateVector[r]) output_file << s << ", ";
-					for(auto it = _inputVector[r].begin(); it != _inputVector[r].end(); ++it)
+					//for(double& s: _stateVector[r]) output_file << s << ", ";
+					for(unsigned i = 0; i<_sLen; i++)
 					{
-						if(it+1 != _inputVector[r].end())
+						output_file << _stateVector[r](i,0) << ", ";
+					}
+					//for(auto it = _inputVector[r].begin(); it != _inputVector[r].end(); ++it)
+					for(unsigned i = 0; i<_iLen; i++)
+					{
+						if(i+1 != _iLen)
 						{
-							output_file << *it << ", ";
+							output_file << _inputVector[r](i,0) << ", ";
 						}
 						else
 						{
-							output_file << *it;
+							output_file << _inputVector[r](i,0);
 						}
 					}
-
 					output_file << "\n";
 				}
-
 				output_file.close();
 			}
 			else
@@ -154,28 +156,27 @@ public:
 
 protected:
 	// System Equations: Only diff is protected
-	virtual std::vector<double> diff(				// Difference Equation. Defined in derived class.
-		std::vector<double>& state_IN, 
-		std::vector<double>& input_IN) = 0;		
+	virtual Matrix diff(	// Difference Equation. Defined in derived class.
+		Matrix& state_IN, 
+		Matrix& input_IN) = 0;		
 
 private:
 	// System Equations: Private
-	std::vector<double> integrator(
-		std::vector<double>& state_IN,
-		std::vector<double>& input_IN)				// Simple integrator
+	Matrix integrator(		// Simple integrator
+		Matrix state_IN,
+		Matrix input_IN)	
 	{
-		std::vector<double> s_next(_sLen);
-		std::vector<double> s_dot = diff(state_IN, input_IN);
-		for (size_t s = 0; s < _sLen; s++) s_next[s] = _state[s] + s_dot[s] * _dt;
-		return s_next;
+		Matrix s_dot = diff(state_IN, input_IN);
+		return _state + s_dot * _dt;
 	}
 
 	// Controller: Defined in derived class or outside in the main program.
-	std::function<std::vector<double>(std::vector<double>&, std::vector<double>&, double)> _controller = NULL;				
+	//std::function<std::vector<double>(std::vector<double>&, std::vector<double>&, double)> _controller = NULL;
+	std::function<Matrix(Matrix&, Matrix&, double)> _controller = NULL;				
 
 	// States & Inputs: current values
-	std::vector<double> _state;
-	std::vector<double> _input;
+	Matrix _state;
+	Matrix _input;
 
 	size_t _sLen = 0;		// State vector dimension
 	size_t _iLen = 0;		// Input vector dimension
@@ -185,7 +186,7 @@ private:
 	double _ft = 0.0;		// Final time [s]
 
 	// Output 
-	std::vector<std::vector<double>> _stateVector;
-	std::vector<std::vector<double>> _inputVector;
+	std::vector<Matrix> _stateVector;
+	std::vector<Matrix> _inputVector;
 	std::vector<double> _timeVector;
 };
