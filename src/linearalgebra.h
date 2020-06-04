@@ -97,11 +97,14 @@ public:
 	// Sums all elements in row r.
 	double Sum(unsigned r) const;
 
+	// Set element at index.
+	void Set(unsigned r, unsigned c, double v);
+
 	// Return transpose of nXm matrix. Result is mXn.
 	Matrix T() const;
 
 	// Return determinant
-	static double Det(const Matrix &m, unsigned n);
+	double Det(unsigned n);
 
 	// Returns size as [r, c]
 	std::vector<unsigned> Size() const;
@@ -113,7 +116,8 @@ public:
 	static void Print(const Matrix& m);	
 
 private:
-	void cofactor(std::vector<std::vector<double>>& temp, unsigned p, unsigned q, unsigned n) const;
+	void cofactor(Matrix& temp, unsigned p, unsigned q, unsigned n) const;
+	void adjoint(Matrix& adj);
 	void reshape(unsigned r_IN, unsigned c_IN, double n_IN);
 
 	unsigned _nr = 0;

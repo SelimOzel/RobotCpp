@@ -376,6 +376,18 @@ double Matrix::Sum(unsigned r) const
 	}
 }
 
+void Matrix::Set(unsigned r, unsigned c, double v)
+{
+	if(r < _nr && c < _nc)
+	{
+		_m[r][c] = v;
+	}
+	else
+	{
+		throw std::runtime_error("Set Error: index out of bounds");
+	}		
+}
+
 Matrix Matrix::T() const
 {
 	std::vector<std::vector<double>> result(_nc, std::vector<double>(_nr));
@@ -391,18 +403,19 @@ Matrix Matrix::T() const
 }
 
 // Obtained from geeks-for-geeks: https://www.geeksforgeeks.org/determinant-of-a-matrix/
-double Matrix::Det(const Matrix &m, unsigned n) 
+double Matrix::Det(unsigned n) 
 {
-	unsigned nr = m.Size()[0];
-	unsigned nc = m.Size()[1];
+	unsigned nr = _m.size();
+	unsigned nc = _m[0].size();
 
 	//  Base case : if matrix contains single element 
 	if(nr == nc)
 	{
 		double D = 0; // Initialize result 
-		if (n == 1) return m(0,0); 
+		if (n == 1) return _m[0][0]; 
 
-		std::vector<std::vector<double>> temp(n, std::vector<double>(n)); // To store cofactors 
+		//std::vector<std::vector<double>> temp(n, std::vector<double>(n)); // To store cofactors 
+		Matrix temp(n,n,0.0); // To store cofactors 
 
 		int sign = 1;  // To store sign multiplier 
 
@@ -410,8 +423,8 @@ double Matrix::Det(const Matrix &m, unsigned n)
 		for (unsigned f = 0; f < n; f++) 
 		{
 			// Getting Cofactor of mat[0][f] 
-			m.cofactor(temp, 0, f, n); 
-			D += sign * m(0,f) * Det(temp, n - 1); 
+			cofactor(temp, 0, f, n); 
+			D += sign * _m[0][f] * temp.Det(n - 1); 
 			// terms are to be added with alternate sign 
 			sign = -sign; 
 		}
@@ -448,7 +461,7 @@ void Matrix::Print(const Matrix& m)
 }	
 
 // Obtained from geeks-for-geeks: https://www.geeksforgeeks.org/determinant-of-a-matrix/
-void Matrix::cofactor(std::vector<std::vector<double>>& temp, unsigned p, unsigned q, unsigned n) const
+void Matrix::cofactor(Matrix& temp, unsigned p, unsigned q, unsigned n) const
 {
     unsigned i = 0, j = 0; 
   
@@ -461,7 +474,8 @@ void Matrix::cofactor(std::vector<std::vector<double>>& temp, unsigned p, unsign
             //  which are not in given row and column 
             if (row != p && col != q) 
             { 
-                temp[i][j++] = _m[row][col]; 
+            	temp.Set(i,j++,_m[row][col]);
+                //temp[i][j++] = _m[row][col]; 
   
                 // Row is filled, so increase row index and 
                 // reset col index 
@@ -474,6 +488,40 @@ void Matrix::cofactor(std::vector<std::vector<double>>& temp, unsigned p, unsign
         } 
     } 	
 }
+
+// Obtained from geeks-for-geeks: https://www.geeksforgeeks.org/adjoint-inverse-matrix/
+void Matrix::adjoint(Matrix& adj) 
+{ 
+	unsigned N = adj.Size()[0];
+    if (N == 1) 
+    { 
+        adj.Set(0,0,1); 
+        return; 
+    } 
+  
+    // temp is used to store cofactors of A[][] 
+    int sign = 1;
+    //std::vector<std::vector<double>> temp(N, std::vector<double>(N)); // To store cofactors 
+  	Matrix temp(N, N, 0.0);
+
+    for (int i=0; i<N; i++) 
+    { 
+        for (int j=0; j<N; j++) 
+        { 
+            // Get cofactor of A[i][j] 
+            adj.cofactor(temp, i, j, N); 
+
+            // sign of adj[j][i] positive if sum of row 
+            // and column indexes is even. 
+            sign = ((i+j)%2==0)? 1: -1; 
+  
+            // Interchanging rows and columns to get the 
+            // transpose of the cofactor matrix 
+            Matrix tempMat = temp;
+            adj.Set(j,i, (sign)*(temp.Det(N-1)));
+        } 
+    } 
+} 
 
 void Matrix::reshape(unsigned r_IN, unsigned c_IN, double n_IN)
 {
