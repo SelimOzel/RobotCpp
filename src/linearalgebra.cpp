@@ -390,6 +390,40 @@ Matrix Matrix::T() const
 	return resultM;
 }
 
+// Obtained from geeks-for-geeks: https://www.geeksforgeeks.org/determinant-of-a-matrix/
+double Matrix::Det(const Matrix &m, unsigned n) 
+{
+	unsigned nr = m.Size()[0];
+	unsigned nc = m.Size()[1];
+
+	//  Base case : if matrix contains single element 
+	if(nr == nc)
+	{
+		double D = 0; // Initialize result 
+		if (n == 1) return m(0,0); 
+
+		std::vector<std::vector<double>> temp(n, std::vector<double>(n)); // To store cofactors 
+
+		int sign = 1;  // To store sign multiplier 
+
+		// Iterate for each element of first row 
+		for (unsigned f = 0; f < n; f++) 
+		{
+			// Getting Cofactor of mat[0][f] 
+			m.cofactor(temp, 0, f, n); 
+			D += sign * m(0,f) * Det(temp, n - 1); 
+			// terms are to be added with alternate sign 
+			sign = -sign; 
+		}
+
+		return D;	
+	}
+	else
+	{
+		throw std::runtime_error("Determinant error: matrix not square.\n");
+	}
+}
+
 std::vector<unsigned> Matrix::Size() const
 {
 	return {_nr, _nc};
@@ -412,6 +446,34 @@ void Matrix::Print(const Matrix& m)
 		}
 	}
 }	
+
+// Obtained from geeks-for-geeks: https://www.geeksforgeeks.org/determinant-of-a-matrix/
+void Matrix::cofactor(std::vector<std::vector<double>>& temp, unsigned p, unsigned q, unsigned n) const
+{
+    unsigned i = 0, j = 0; 
+  
+    // Looping for each element of the matrix 
+    for (unsigned row = 0; row < n; row++) 
+    { 
+        for (unsigned col = 0; col < n; col++) 
+        { 
+            //  Copying into temporary matrix only those element 
+            //  which are not in given row and column 
+            if (row != p && col != q) 
+            { 
+                temp[i][j++] = _m[row][col]; 
+  
+                // Row is filled, so increase row index and 
+                // reset col index 
+                if (j == n - 1) 
+                { 
+                    j = 0; 
+                    i++; 
+                } 
+            } 
+        } 
+    } 	
+}
 
 void Matrix::reshape(unsigned r_IN, unsigned c_IN, double n_IN)
 {

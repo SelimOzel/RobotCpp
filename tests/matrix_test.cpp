@@ -94,6 +94,15 @@ int main()
 	Matrix E(std::vector<std::vector<double>> {{2,0,1},{0,2,1}});
 	assert(A == E);
 
+	// Determinant and inverse tests
+	E = {
+			{1, 0, 2, -1},   
+			{3, 0, 0, 5},   
+			{2, 1, 4, -3},   
+			{1, 0, 5, 0}   
+	};   
+	assert(30 == Matrix::Det(E, E.Size()[0]));
+
 	std::cout<< "Matrix tests passed!\n";
 	return 1;
 }
