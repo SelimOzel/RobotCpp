@@ -102,6 +102,8 @@ int main()
 			{1, 0, 5, 0}   
 	};   
 	assert(30 == E.Det(E.Size()[0]));
+	Matrix::Print(E*E.Inv());
+	std::cout<<"\n";
 
 	std::cout<< "Matrix tests passed!\n";
 	return 1;

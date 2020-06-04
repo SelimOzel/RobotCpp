@@ -14,6 +14,15 @@
 
 Matrix::Matrix(){}
 
+Matrix::Matrix(unsigned n, double v)
+{
+	reshape(n, n, 0.0);
+	for(unsigned i = 0; i<n; i++)
+	{
+		_m[i][i] = n;
+	}
+}
+
 Matrix::Matrix(const std::vector<double>& m)
 {
 	reshape(m.size(), 1, 0.0);
@@ -311,7 +320,7 @@ bool Matrix::operator== (const Matrix &m) const
 	{
 		for(unsigned c = 0; c < _nc; c++)
 		{
-			if(m(r,c) != _m[r][c]) false;
+			if(m(r,c) != _m[r][c]) return false;
 		}
 	}
 	return true;
@@ -403,14 +412,14 @@ Matrix Matrix::T() const
 }
 
 // Obtained from geeks-for-geeks: https://www.geeksforgeeks.org/determinant-of-a-matrix/
-double Matrix::Det(unsigned n) 
+double Matrix::Det(unsigned n) const
 {
 	unsigned nr = _m.size();
 	unsigned nc = _m[0].size();
 
-	//  Base case : if matrix contains single element 
 	if(nr == nc)
 	{
+		//  Base case : if matrix contains single element 
 		double D = 0; // Initialize result 
 		if (n == 1) return _m[0][0]; 
 
@@ -433,13 +442,47 @@ double Matrix::Det(unsigned n)
 	}
 	else
 	{
-		throw std::runtime_error("Determinant error: matrix not square.\n");
+		throw std::runtime_error("Determinant error: not square\n");
 	}
 }
 
 std::vector<unsigned> Matrix::Size() const
 {
 	return {_nr, _nc};
+}
+
+Matrix Matrix::Inv() const
+{
+	unsigned nr = _m.size();
+	unsigned nc = _m[0].size();
+
+	if(nr == nc)
+	{	
+	    // Find determinant of A[][] 
+	    double determinant = Det(nr); 
+	    if (determinant == 0) 
+	    { 
+	        throw std::runtime_error("Inverse error: determinant must be non-zero\n"); 
+	    } 
+	  
+	    // Inverse
+	    Matrix inverse(nr,nr,0.0);
+
+	    // Find adjoint 
+	    Matrix adj(nr, nr, 0.0);
+	    adjoint(adj); 
+
+	    // Find Inverse using formula "inverse(A) = adj(A)/det(A)" 
+	    for (unsigned i=0; i<nr; i++) 
+	        for (unsigned j=0; j<nr; j++) 
+	            inverse.Set(i,j,adj(i,j)/determinant); 
+	  
+	    return inverse; 
+    }	
+	else
+	{
+		throw std::runtime_error("Inverse error: not square\n");
+	}    
 }
 
 void Matrix::Size(const Matrix& m)
@@ -490,9 +533,9 @@ void Matrix::cofactor(Matrix& temp, unsigned p, unsigned q, unsigned n) const
 }
 
 // Obtained from geeks-for-geeks: https://www.geeksforgeeks.org/adjoint-inverse-matrix/
-void Matrix::adjoint(Matrix& adj) 
+void Matrix::adjoint(Matrix& adj) const
 { 
-	unsigned N = adj.Size()[0];
+	unsigned N = _nr;
     if (N == 1) 
     { 
         adj.Set(0,0,1); 
@@ -509,7 +552,7 @@ void Matrix::adjoint(Matrix& adj)
         for (int j=0; j<N; j++) 
         { 
             // Get cofactor of A[i][j] 
-            adj.cofactor(temp, i, j, N); 
+            cofactor(temp, i, j, N); 
 
             // sign of adj[j][i] positive if sum of row 
             // and column indexes is even. 
@@ -517,7 +560,6 @@ void Matrix::adjoint(Matrix& adj)
   
             // Interchanging rows and columns to get the 
             // transpose of the cofactor matrix 
-            Matrix tempMat = temp;
             adj.Set(j,i, (sign)*(temp.Det(N-1)));
         } 
     } 

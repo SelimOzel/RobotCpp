@@ -20,6 +20,7 @@ class Matrix
 public:
 	// Constructor(s)
 	Matrix();
+	Matrix(unsigned n, double v); // Creates a square matrix with diagonal entries
 	Matrix(const std::vector<double>& m);
 	Matrix(const std::vector<std::vector<double>>& m);
 	Matrix(unsigned nr, unsigned nc, double n);
@@ -104,7 +105,10 @@ public:
 	Matrix T() const;
 
 	// Return determinant
-	double Det(unsigned n);
+	double Det(unsigned n) const;
+
+	// Return inverted matrix
+	Matrix Inv() const;
 
 	// Returns size as [r, c]
 	std::vector<unsigned> Size() const;
@@ -117,7 +121,7 @@ public:
 
 private:
 	void cofactor(Matrix& temp, unsigned p, unsigned q, unsigned n) const;
-	void adjoint(Matrix& adj);
+	void adjoint(Matrix& adj) const;
 	void reshape(unsigned r_IN, unsigned c_IN, double n_IN);
 
 	unsigned _nr = 0;
