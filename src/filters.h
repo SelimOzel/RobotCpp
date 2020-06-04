@@ -6,40 +6,25 @@
 ██║  ██║╚██████╔╝██████╔╝╚██████╔╝   ██║   ╚██████╗██║     ██║     
 ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝    ╚═╝    ╚═════╝╚═╝     ╚═╝                                                                   
 */
+#ifndef __FILTERS_H
+#define __FILTERS_H
 
-// Wheel is derived from dynamic system
-#include "dynamicsystem.h"
+#include "linearalgebra.h"
 
-const size_t NUMBEROFSTATES = 3;
-const size_t NUMBEROFINPUTS = 2;
-
-class Wheel : public dynamicsystem
+class KalmanFilter
 {
 public:
-	// Default constructor with custom initial settings
-	Wheel(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN) : 
-	dynamicsystem(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
-	{
-		SetController(&ConstantSpeedController);
-	}
-
-	// Default estimator: return state as is
-	static Matrix ConstantEstimator(Matrix& state_IN, Matrix& input_IN, double time_IN){return state_IN;}
-
-	// Default controller: constant speed
-	static Matrix ConstantSpeedController(Matrix& state_IN, Matrix& input_IN, double time_IN){return input_IN;}
+	// Constructor
+	KalmanFilter(const Matrix& F_IN, const Matrix& H_IN, const Matrix& B_IN);
+	
+	// Filter
+	std::vector<Matrix> Filter(Matrix& x, Matrix& P, Matrix& z, Matrix& u);
 
 private:
-	Matrix diff(Matrix& state_IN, Matrix& input_IN)
-	{
-		// Wheel equations of motion
-		Matrix s_diff;
-		s_diff = std::vector<double>
-		{
-			cos(state_IN(2,0)) * input_IN(0,0), // cos(theta) * v
-			sin(state_IN(2,0)) * input_IN(0,0), // sin(theta) * v
-			input_IN(1,0) // w
-		}; 
-		return s_diff; // return as column
-	}
+	Matrix _F; // State transition matrix
+	Matrix _H; // Sensor matrix
+	Matrix _B; // Input matrix
 };
+
+#include "filters.cpp"
+#endif

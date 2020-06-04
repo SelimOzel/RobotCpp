@@ -11,6 +11,8 @@
 #define __DYNAMICSYSTEM_H
 
 #include "linearalgebra.h" // Lightweight linear algebra tools
+#include "filters.h"
+
 #include <fstream> // Writing to csv file.
 #include <cmath> // Math operations
 #include <functional> // Used for passing controller to robot instances
@@ -24,6 +26,9 @@ public:
 
 	// Change the dynamic system controller
 	void SetController(const std::function<Matrix(Matrix&,Matrix&,double)>& newController_IN);
+
+	// Change dynamic system estimator
+	void SetEstimator(const std::function<Matrix(Matrix&,Matrix&,double)>& newEstimator_IN);
 
 	// System parameters (i.e. mass, damping ...)
 	virtual void SetParameters();
@@ -44,6 +49,9 @@ protected:
 private:
 	// System Equations: Private
 	Matrix integrator(Matrix state_IN, Matrix input_IN);	// Simple integrator
+
+	// Estimator: Defined in derived class or outside in the main program.
+	std::function<Matrix(Matrix&, Matrix&, double)> _estimator = NULL;	
 
 	// Controller: Defined in derived class or outside in the main program.
 	std::function<Matrix(Matrix&, Matrix&, double)> _controller = NULL;				

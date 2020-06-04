@@ -20,14 +20,15 @@ public:
 	WheelAdvanced(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN) : 
 	dynamicsystem(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
 	{
+		SetEstimator(&ConstantEstimator);
 		SetController(&ConstantTorqueController);
 	}
 
-	// Default controller: same speed
-	static Matrix ConstantTorqueController(Matrix& state_IN, Matrix& input_IN, double time_IN)
-	{
-		return input_IN;
-	}
+	// Default estimator: return state as is
+	static Matrix ConstantEstimator(Matrix& state_IN, Matrix& input_IN, double time_IN){return state_IN;}
+
+	// Default controller: constant torque
+	static Matrix ConstantTorqueController(Matrix& state_IN, Matrix& input_IN, double time_IN){return input_IN;}
 
 	// Set Parameters
 	void SetParameters(double r_IN, double m_IN, double b_IN)

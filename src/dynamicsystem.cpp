@@ -40,6 +40,11 @@ dynamicsystem::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, s
 	}
 }
 
+void dynamicsystem::SetEstimator(const std::function<Matrix(Matrix&,Matrix&,double)>& newEstimator_IN)
+{
+	_estimator = newEstimator_IN;
+}
+
 void dynamicsystem::SetController(const std::function<Matrix(Matrix&,Matrix&,double)>& newController_IN)
 {
 	_controller = newController_IN;
@@ -66,6 +71,7 @@ void dynamicsystem::Simulate()
 			while (currentTime <= _ft)
 			{
 				// Compute next input and next state. Input must be computed first!
+				_state = _estimator(_state, _input, currentTime);
 				_input = _controller(_state, _input, currentTime);
 				_state = integrator(_state, _input);
 
