@@ -12,6 +12,58 @@
 // Wheel 
 #include "wheeladvanced.h"
 
+KalmanFilter AdvancedWheelKalman(Matrix& initialState_IN)
+{
+	// Initialize Kalman Filter ...
+	// 4x4 correlation matrix. Initialized to 10.0
+	Matrix P(4,10); 
+
+	// 4x4 Prediction matrix.
+	Matrix F(4,4,0.0);
+	double dt = 0.05;	// Integrator delta [s].. SAME AS INTEGRATOR
+	F = {
+		{1,0,dt,0},
+		{0,1,0,dt},
+		{0,0,1,0},
+		{0,0,0,1}
+	};
+
+	// 4x2 input matrix not used.
+	Matrix B(4,2,0.0);
+
+	// 2x4 sensor matrix
+	Matrix H(2,4,0.0);
+	H = {
+		{1,0,0,0},
+		{0,1,0,0}
+	};
+
+	Matrix kalmanStateInit(4,0,0.0);
+	kalmanStateInit.Set(0,0, initialState_IN(0,0)); // Wheel angle, alpha
+	kalmanStateInit.Set(0,0, initialState_IN(4,0)); // Wheel global angle, theta
+
+	KalmanFilter Kalman;
+	Kalman.Initialize(F, H, B, kalmanStateInit, P);
+
+	return Kalman;
+}
+
+Matrix GlobalPositionEstimator(Matrix& state_IN, Matrix& input_IN, double time_IN)
+{
+	// 2x1 measurement vector
+	Matrix z(2,1,0);
+	z.Set(0,0, state_IN(0,0)); // Save wheel angle, alpha
+	z.Set(1,0, state_IN(4,0)); // Save wheel global angle, theta
+
+	// 2x1 input vector. set to zero.
+	Matrix u(2,1,0);
+
+	//Kalman.Filter(z,u);
+	//KalmanFilter wheelKalman(F, H, B);
+
+	return state_IN;
+}
+
 int main()
 {
 	// Inputs 
@@ -36,6 +88,7 @@ int main()
 	
 	// Wheel simulation & data extraction 
 	WheelAdvanced myWheel(state, input, time);
+	myWheel.SetEstimator(&GlobalPositionEstimator); // Set the kalman filter for global position estimation
 	myWheel.Simulate();
 	myWheel.ExportCSV("wheel_1kg_kalman_constant_torque.csv");
 
