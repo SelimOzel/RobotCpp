@@ -5,11 +5,16 @@ define Builder
 	g++ -o $(1) $(2) -Isrc 
 endef
 
-all: output_folder wheel_simple wheel_kalman
+all: output_folder pendulum_pid wheel_simple wheel_kalman
 	@echo --- Building all examples
 
 output_folder:
 	if not exist _bin (mkdir _bin) 
+
+pendulum_pid: output_folder
+	@echo --- Building pendulum_pid
+	$(call Builder,pendulum_pid,examples\pendulum_pid.cpp)
+	move "pendulum_pid.exe" _bin	
 
 wheel_simple: output_folder
 	@echo --- Building wheel_simple
