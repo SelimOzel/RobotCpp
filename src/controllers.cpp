@@ -6,51 +6,59 @@
 ██║  ██║╚██████╔╝██████╔╝╚██████╔╝   ██║   ╚██████╗██║     ██║     
 ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝    ╚═╝    ╚═════╝╚═╝     ╚═╝                                                                   
 */
+#ifndef __CONTROLLERS_CPP
+#define __CONTROLLERS_CPP
 
-#define _USE_MATH_DEFINES
-
-// Pendulum with pid controller 
-#include "pendulum.h"
 #include "controllers.h"
 
-Matrix constantcontroller(Matrix& state_IN, Matrix& input_IN, double time_IN)
+PID::PID(){}
+PID::PID(double kp, double kd, double ki, int integrator_length)
 {
-	return input_IN;
+	setKp(kp);
+	setKd(kd);
+	setKi(ki);
+	setIntegrator(integrator_length);
 }
 
-int main()
+void PID::setKp(double kp)
 {
-	// Inputs 
-	double a = 0.0; // angular acceleration [rad/s^2]
-
-	// State 
-	double theta = 90.0*(M_PI/180.0); // pendulum angle [rad]
-	double theta_dot = 0.0;	// pendulum angular speed [rad/s]	
-
-	// Integrator Values 
-	double dt = 0.001;	// Integrator delta [s]
-	double ft = 10.0;	// Integrator end time [s]
-
-	// PID Controller
-	double kp = 0.1;
-	double kd = 0.0;
-	double ki = 0.0;
-	int integrator_length = 100;
-	PID pendulumPID(kp, kd, ki, integrator_length);
-
-	// Pendulum initial values
-	Matrix state(std::vector<double> { theta,theta_dot});
-	Matrix input(std::vector<double> { a });
-	std::vector<double> time = { dt,ft };
-
-	// Peundulum creation
-	Pendulum myPendulum(state, input, time);
-	myPendulum.SetParameters(0.1, 0.1); // length 1m, damping 0.0
-	myPendulum.SetController(&constantcontroller); // attach pid controller
-	
-	// Simulation & data extraction 
-	myPendulum.Simulate();
-	myPendulum.ExportCSV("pendulum_pid.csv");	
-
-	return 1;
+	_kp = kp;
 }
+
+void PID::setKd(double kd)
+{
+	_kd = kd;
+}
+
+void PID::setKi(double ki)
+{
+	_ki = ki;
+}
+
+void PID::setIntegrator(int integrator_length)
+{
+	clear();
+	_integrator_length = integrator_length;
+}
+
+double PID::compute(double e, double e_dot)
+{
+	if(_integrator.size() >= _integrator_length) 
+	{
+		_ei -= _integrator.front();
+		_integrator.pop();
+	}
+	_ei += e;
+	_integrator.push(e);
+
+	return _kp*e + _kd*e_dot + _ki*_ei;
+}
+
+void PID::clear()
+{
+	std::queue<double> empty;
+	std::swap( _integrator, empty );
+	_ei = 0.0;
+}
+
+#endif
