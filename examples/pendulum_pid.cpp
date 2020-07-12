@@ -13,7 +13,7 @@
 #include "pendulum.h"
 #include "controllers.h"
 
-Matrix constantcontroller(Matrix& state_IN, Matrix& input_IN, double time_IN)
+Matrix constantcontroller(Matrix& state_IN, Matrix& input_IN, double time_IN, PID& controller_IN)
 {
 	return input_IN;
 }
@@ -44,7 +44,7 @@ int main()
 	std::vector<double> time = { dt,ft };
 
 	// Peundulum creation
-	Pendulum myPendulum(state, input, time);
+	Pendulum<PID> myPendulum(state, input, time, pendulumPID);
 	myPendulum.SetParameters(0.1, 0.1); // length 1m, damping 0.0
 	myPendulum.SetController(&constantcontroller); // attach pid controller
 	

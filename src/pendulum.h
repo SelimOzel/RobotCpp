@@ -13,22 +13,23 @@
 const size_t NUMBEROFSTATES = 2;
 const size_t NUMBEROFINPUTS = 1;
 
-class Pendulum : public dynamicsystem
+template <class Controller>
+class Pendulum : public dynamicsystem<Controller>
 {
 public:
 	// Default constructor with custom initial settings
-	Pendulum(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN) : 
-	dynamicsystem(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
+	Pendulum(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, Controller& C) : 
+	dynamicsystem<Controller>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS, C)
 	{
-		SetEstimator(&ConstantEstimator);
-		SetController(&ConstantTorqueController);
+		this->SetEstimator(&ConstantEstimator);
+		this->SetController(&ConstantTorqueController);
 	}
 
 	// Default estimator: return state as is
 	static Matrix ConstantEstimator(Matrix& state_IN, Matrix& input_IN, double time_IN){return state_IN;}
 
 	// Default controller: constant torque
-	static Matrix ConstantTorqueController(Matrix& state_IN, Matrix& input_IN, double time_IN){return input_IN;}
+	static Matrix ConstantTorqueController(Matrix& state_IN, Matrix& input_IN, double time_IN, Controller& C){return input_IN;}
 
 	// Set Parameters
 	void SetParameters(double r_IN, double b_IN)

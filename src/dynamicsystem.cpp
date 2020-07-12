@@ -12,7 +12,8 @@
 
 #include "dynamicsystem.h"
 
-dynamicsystem::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN)
+template<class Controller>
+dynamicsystem<Controller>::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN, Controller& C)
 {
 	try{
 		if(initialState_IN.Size()[0] != sLen_IN)
@@ -33,6 +34,8 @@ dynamicsystem::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, s
 		_dt = time_IN[0];
 		_ft = time_IN[1];
 
+		_controllerClass = C;
+
 	}
 	catch(char const* s)
 	{
@@ -40,25 +43,29 @@ dynamicsystem::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, s
 	}
 }
 
-void dynamicsystem::SetEstimator(const std::function<Matrix(Matrix&,Matrix&,double)>& newEstimator_IN)
+template<class Controller>
+void dynamicsystem<Controller>::SetEstimator(const std::function<Matrix(Matrix&,Matrix&,double)>& newEstimator_IN)
 {
 	_estimator = newEstimator_IN;
 }
 
-void dynamicsystem::SetController(const std::function<Matrix(Matrix&,Matrix&,double)>& newController_IN)
+template<class Controller>
+void dynamicsystem<Controller>::SetController(const std::function<Matrix(Matrix&,Matrix&,double, Controller&)>& newController_IN)
 {
-	_controller = newController_IN;
+	_controllerCB = newController_IN;
 }
 
-void dynamicsystem::SetParameters()
+template<class Controller>
+void dynamicsystem<Controller>::SetParameters()
 {
 	std::cout << "SetParameters() needs to be defined at derived class.\n"; 
 }
 
-void dynamicsystem::Simulate()
+template<class Controller>
+void dynamicsystem<Controller>::Simulate()
 {
 	try{
-		if(_controller != NULL)
+		if(_controllerCB != NULL)
 		{
 			double currentTime = 0.0;
 
@@ -72,7 +79,7 @@ void dynamicsystem::Simulate()
 			{
 				// Compute next input and next state. Input must be computed first!
 				_state = _estimator(_state, _input, currentTime);
-				_input = _controller(_state, _input, currentTime);
+				_input = _controllerCB(_state, _input, currentTime, _controllerClass);
 				_state = integrator(_state, _input);
 
 				// Update simulation time
@@ -95,7 +102,8 @@ void dynamicsystem::Simulate()
 	}
 }
 
-void dynamicsystem::Reset(Matrix& resetState_IN, Matrix& resetInput_IN)
+template<class Controller>
+void dynamicsystem<Controller>::Reset(Matrix& resetState_IN, Matrix& resetInput_IN)
 {
 	_stateVector.clear();
 	_inputVector.clear();
@@ -105,7 +113,8 @@ void dynamicsystem::Reset(Matrix& resetState_IN, Matrix& resetInput_IN)
 	_input = resetInput_IN;	
 }
 
-void dynamicsystem::ExportCSV(char const* s)
+template<class Controller>
+void dynamicsystem<Controller>::ExportCSV(char const* s)
 {
 	try{
 		if(_timeVector.size() > 0)
@@ -144,7 +153,8 @@ void dynamicsystem::ExportCSV(char const* s)
 	}		
 }
 
-Matrix dynamicsystem::integrator(Matrix state_IN, Matrix input_IN)	
+template<class Controller>
+Matrix dynamicsystem<Controller>::integrator(Matrix state_IN, Matrix input_IN)	
 {
 	Matrix s_dot = diff(state_IN, input_IN);
 	return _state + s_dot * _dt;

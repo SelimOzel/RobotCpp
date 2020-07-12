@@ -18,14 +18,15 @@
 #include <functional> // Used for passing controller to robot instances
 
 // Base class for all dynamic systems in RobotCpp
+template<class Controller>
 class dynamicsystem
 {
 public:
 	// Constructor
-	dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN);
+	dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN, Controller& C);
 
 	// Change the dynamic system controller
-	void SetController(const std::function<Matrix(Matrix&,Matrix&,double)>& newController_IN);
+	void SetController(const std::function<Matrix(Matrix&,Matrix&,double,Controller&)>& newController_IN);
 
 	// Change dynamic system estimator
 	void SetEstimator(const std::function<Matrix(Matrix&,Matrix&,double)>& newEstimator_IN);
@@ -53,8 +54,11 @@ private:
 	// Estimator: Defined in derived class or outside in the main program.
 	std::function<Matrix(Matrix&, Matrix&, double)> _estimator = NULL;	
 
-	// Controller: Defined in derived class or outside in the main program.
-	std::function<Matrix(Matrix&, Matrix&, double)> _controller = NULL;				
+	// Controller: Defined in derived class or outside in the main program.				
+	std::function<Matrix(Matrix&, Matrix&, double, Controller&)> _controllerCB = NULL;	
+
+	// Advanced controller class
+	Controller _controllerClass;
 
 	// States & Inputs: current values
 	Matrix _state;
