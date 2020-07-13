@@ -17,12 +17,15 @@
 #include <cmath> // Math operations
 #include <functional> // Used for passing controller to robot instances
 
+class NOCONTROLLER {}; // Global definition for robotcpp. Use this in the model when a controller class is not needed.
+
 // Base class for all dynamic systems in RobotCpp
 template<class Controller>
 class dynamicsystem
 {
 public:
 	// Constructor
+	dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN);
 	dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN, Controller& C);
 
 	// Change the dynamic system controller
@@ -48,6 +51,9 @@ protected:
 	virtual Matrix diff(Matrix& state_IN, Matrix& input_IN) = 0; // Difference Equation. Defined in derived class.	
 
 private:
+	// Called by constructors
+	void initializestate(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN);
+
 	// System Equations: Private
 	Matrix integrator(Matrix state_IN, Matrix input_IN);	// Simple integrator
 

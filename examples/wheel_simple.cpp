@@ -11,9 +11,8 @@
 
 // Wheel 
 #include "wheel.h"
-#include "controllers.h"
 
-Matrix SpeedControllerCallback(Matrix& state_IN, Matrix& input_IN, double time_IN, PID& controller_IN)
+Matrix SpeedControllerCallback(Matrix& state_IN, Matrix& input_IN, double time_IN, NOCONTROLLER& controller_IN)
 {
 	if(time_IN > 5.0)
 	{
@@ -49,8 +48,7 @@ int main()
 	std::vector<double> time = { dt,ft };
 	
 	// Wheel simulation & data extraction 
-	PID notUsed;
-	Wheel<PID> myWheel(state, input, time, notUsed);
+	Wheel<NOCONTROLLER> myWheel(state, input, time);
 
 	myWheel.Simulate();
 	myWheel.ExportCSV("wheel_output.csv");

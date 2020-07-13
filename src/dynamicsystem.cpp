@@ -13,7 +13,20 @@
 #include "dynamicsystem.h"
 
 template<class Controller>
+dynamicsystem<Controller>::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN)
+{
+	initializestate(initialState_IN, initialInput_IN, time_IN, sLen_IN, iLen_IN);
+}
+
+template<class Controller>
 dynamicsystem<Controller>::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN, Controller& C)
+{
+	_controllerClass = C;
+	initializestate(initialState_IN, initialInput_IN, time_IN, sLen_IN, iLen_IN);
+}
+
+template<class Controller>
+void dynamicsystem<Controller>::initializestate(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN)
 {
 	try{
 		if(initialState_IN.Size()[0] != sLen_IN)
@@ -33,9 +46,6 @@ dynamicsystem<Controller>::dynamicsystem(Matrix& initialState_IN, Matrix& initia
 
 		_dt = time_IN[0];
 		_ft = time_IN[1];
-
-		_controllerClass = C;
-
 	}
 	catch(char const* s)
 	{
