@@ -13,7 +13,7 @@
 #include "pendulum.h"
 #include "controllers.h"
 
-Matrix constantcontroller(Matrix& state_IN, Matrix& input_IN, double time_IN, PID& controller_IN)
+Matrix PIDControllerCallBack(Matrix& state_IN, Matrix& input_IN, double time_IN, PID& controller_IN)
 {
 	return input_IN;
 }
@@ -46,7 +46,7 @@ int main()
 	// Peundulum creation
 	Pendulum<PID> myPendulum(state, input, time, pendulumPID);
 	myPendulum.SetParameters(0.1, 0.1); // length 1m, damping 0.0
-	myPendulum.SetController(&constantcontroller); // attach pid controller
+	myPendulum.SetController(&PIDControllerCallBack); // attach pid controller
 	
 	// Simulation & data extraction 
 	myPendulum.Simulate();

@@ -21,6 +21,7 @@ public:
 	Wheel(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, Controller& C) : 
 	dynamicsystem<Controller>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS, C)
 	{
+		this->SetEstimator(&ConstantEstimator);
 		this->SetController(&ConstantSpeedController);
 	}
 

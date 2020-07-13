@@ -13,7 +13,7 @@
 #include "wheel.h"
 #include "controllers.h"
 
-Matrix SpeedController(Matrix& state_IN, Matrix& input_IN, double time_IN, PID& controller_IN)
+Matrix SpeedControllerCallback(Matrix& state_IN, Matrix& input_IN, double time_IN, PID& controller_IN)
 {
 	if(time_IN > 5.0)
 	{
@@ -57,7 +57,7 @@ int main()
 
 	// Reset robot at same initial condition 
 	myWheel.Reset(state, input);
-	myWheel.SetController(&SpeedController); 	// Attach a custom controller
+	myWheel.SetController(&SpeedControllerCallback); 	// Attach a custom controller
 	myWheel.Simulate();
 	myWheel.ExportCSV("wheel_output_custom_controller.csv");
 
