@@ -39,7 +39,7 @@ public:
 	}
 
 private:
-	// Advanced wheel parameters
+	// Pendulum parameters
 	double _r = 1.0;			// [m]		
 	double _g = 9.8;			// [m/s^2]
 	double _b = 0.5;			// [1/s]

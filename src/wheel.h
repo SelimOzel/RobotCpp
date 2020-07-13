@@ -13,21 +13,22 @@
 const size_t NUMBEROFSTATES = 3;
 const size_t NUMBEROFINPUTS = 2;
 
-class Wheel : public dynamicsystem
+template <class Controller>
+class Wheel : public dynamicsystem<Controller>
 {
 public:
 	// Default constructor with custom initial settings
-	Wheel(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN) : 
-	dynamicsystem(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
+	Wheel(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, Controller& C) : 
+	dynamicsystem<Controller>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS, C)
 	{
-		SetController(&ConstantSpeedController);
+		this->SetController(&ConstantSpeedController);
 	}
 
 	// Default estimator: return state as is
 	static Matrix ConstantEstimator(Matrix& state_IN, Matrix& input_IN, double time_IN){return state_IN;}
 
 	// Default controller: constant speed
-	static Matrix ConstantSpeedController(Matrix& state_IN, Matrix& input_IN, double time_IN){return input_IN;}
+	static Matrix ConstantSpeedController(Matrix& state_IN, Matrix& input_IN, double time_IN, Controller& C){return input_IN;}
 
 private:
 	Matrix diff(Matrix& state_IN, Matrix& input_IN)
