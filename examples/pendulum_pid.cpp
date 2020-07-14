@@ -15,6 +15,11 @@
 
 Matrix PIDControllerCallBack(Matrix& state_IN, Matrix& input_IN, double time_IN, PID& controller_IN)
 {
+	double referenceAngle = 45.0*(M_PI/180.0);
+	double error =  referenceAngle - state_IN(0,0);
+	double error_dot = -state_IN(1,0);
+	double u = controller_IN.compute(error, error_dot);
+	input_IN.Set(0,0,u);
 	return input_IN;
 }
 
@@ -24,7 +29,7 @@ int main()
 	double a = 0.0; // angular acceleration [rad/s^2]
 
 	// State 
-	double theta = 90.0*(M_PI/180.0); // pendulum angle [rad]
+	double theta = 25.0*(M_PI/180.0); // pendulum angle [rad]
 	double theta_dot = 0.0;	// pendulum angular speed [rad/s]	
 
 	// Integrator Values 
@@ -32,9 +37,9 @@ int main()
 	double ft = 10.0;	// Integrator end time [s]
 
 	// PID Controller
-	double kp = 0.1;
-	double kd = 0.0;
-	double ki = 0.0;
+	double kp = 50.0;
+	double kd = 45;
+	double ki = 4.0;
 	int integrator_length = 100;
 	PID pendulumPID(kp, kd, ki, integrator_length);
 
@@ -45,12 +50,13 @@ int main()
 
 	// Peundulum creation
 	Pendulum<PID> myPendulum(state, input, time, pendulumPID);
-	myPendulum.SetParameters(0.1, 0.1); // length 1m, damping 0.0
+	myPendulum.SetParameters(1.0, 1.0); // length 1m, damping 0.0
 	myPendulum.SetController(&PIDControllerCallBack); // attach pid controller
 	
 	// Simulation & data extraction 
 	myPendulum.Simulate();
 	myPendulum.ExportCSV("pendulum_pid.csv");	
 
+	std::cout << "pendulum_pid: Completed\n";
 	return 1;
 }
