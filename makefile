@@ -5,7 +5,7 @@ define Builder
 	g++ -o $(1) $(2) -Isrc 
 endef
 
-all: output_folder pendulum_pid wheel_simple wheel_kalman
+all: output_folder pendulum_pid pendulum_double wheel_simple wheel_kalman
 	@echo --- Building all examples
 
 output_folder:
@@ -15,6 +15,11 @@ pendulum_pid: output_folder
 	@echo --- Building pendulum_pid
 	$(call Builder,pendulum_pid,examples\pendulum_pid.cpp)
 	move "pendulum_pid.exe" _bin	
+
+pendulum_double: output_folder
+	@echo --- Building pendulum_double
+	$(call Builder,pendulum_double,examples\pendulum_double.cpp)
+	move "pendulum_double.exe" _bin	
 
 wheel_simple: output_folder
 	@echo --- Building wheel_simple
