@@ -9,38 +9,35 @@
 
 #define _USE_MATH_DEFINES
 
-// Double pendulum
-#include "doublependulum.h"
+// Vertical hopper
+#include "verticalhopper.h"
 
 int main()
 {
 	// Inputs 
-	double a1 = 0.0; // angular acceleration [rad/s^2]
-	double a2 = 0.0;
+	double a = 0.0; // vertical acceleration [m/s^2]
 
 	// State 
-	double theta1 = 25.0*(M_PI/180.0); // pendulum angle [rad]
-	double theta1_dot = 0.0;	// pendulum angular speed [rad/s]	
-	double theta2 = 15.0*(M_PI/180.0); 
-	double theta2_dot = 0.0;	
+	double y = 10; // vertical position [m]
+	double y_dot = 0.0; // vertical speed [m/s]	
 
 	// Integrator Values 
 	double dt = 0.001;	// Integrator delta [s]
-	double ft = 10.0;	// Integrator end time [s]
+	double ft = 100.0;	// Integrator end time [s]
 
-	// Double pendulum initial values
-	Matrix state(std::vector<double> { theta1,theta1_dot,theta2,theta2_dot});
-	Matrix input(std::vector<double> { a1,a2 });
+	// Vertical hopper initial values
+	Matrix state(std::vector<double> { y,y_dot });
+	Matrix input(std::vector<double> { a });
 	std::vector<double> time = { dt,ft };
 
-	// Double pendulum creation
-	DoublePendulum<NOCONTROLLER> doublePendulum(state, input, time);
-	doublePendulum.SetParameters(1.0, 1.0, 1.0, 1.0 ,0.5, 0.5); // l1,l2,m1,m2,b1,b2
+	// Vertical hopper creation
+	VerticalHopper<NOCONTROLLER> verticalHopper(state, input, time);
+	verticalHopper.SetParameters(1.0, 1.0, 1.0); // k,m,eq
 
 	// Simulation & data extraction 
-	doublePendulum.Simulate();
-	doublePendulum.ExportCSV("pendulum_double.csv");	
+	verticalHopper.Simulate();
+	verticalHopper.ExportCSV("hopper_vertical.csv");	
 
-	std::cout << "pendulum_double: Completed\n";
+	std::cout << "hopper_vertical: Completed\n";
 	return 1;
 }

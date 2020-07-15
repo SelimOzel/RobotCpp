@@ -46,7 +46,7 @@ private:
 
 	Matrix diff(Matrix state_IN, Matrix input_IN)
 	{
-		// Advanced wheel equations of motion
+		// Pendulum equations of motion
 		Matrix s_diff;
 		s_diff = std::vector<double>
 		{

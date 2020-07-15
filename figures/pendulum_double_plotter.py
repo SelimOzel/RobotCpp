@@ -68,7 +68,7 @@ def plotter(nameCSV_IN, nameFigure_IN):
 	plt.show()	
 
 def main():
-	plotter("../pendulum_double.csv", "Pendulum - Angle, speed & phase")
+	plotter("../pendulum_double.csv", "Double Pendulum - Angle, speed & phase")
 
 if __name__ == "__main__":
     main()
