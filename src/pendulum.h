@@ -18,7 +18,7 @@ class Pendulum : public dynamicsystem<Controller>
 {
 public:
 	// Default constructor with custom initial settings
-	Pendulum(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, Controller& C) : 
+	Pendulum(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, Controller& C) : 
 	dynamicsystem<Controller>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS, C)
 	{
 		this->SetEstimator(&ConstantEstimator);
@@ -26,10 +26,10 @@ public:
 	}
 
 	// Default estimator: return state as is
-	static Matrix ConstantEstimator(Matrix& state_IN, Matrix& input_IN, double time_IN){return state_IN;}
+	static Matrix ConstantEstimator(Matrix state_IN, Matrix input_IN, double time_IN){return state_IN;}
 
 	// Default controller: constant torque
-	static Matrix ConstantTorqueController(Matrix& state_IN, Matrix& input_IN, double time_IN, Controller& C){return input_IN;}
+	static Matrix ConstantTorqueController(Matrix state_IN, Matrix input_IN, double time_IN, Controller& C){return input_IN;}
 
 	// Set Parameters
 	void SetParameters(double r_IN, double b_IN)
@@ -44,7 +44,7 @@ private:
 	double _g = 9.8;			// [m/s^2]
 	double _b = 0.5;			// [1/s]
 
-	Matrix diff(Matrix& state_IN, Matrix& input_IN)
+	Matrix diff(Matrix state_IN, Matrix input_IN)
 	{
 		// Advanced wheel equations of motion
 		Matrix s_diff;

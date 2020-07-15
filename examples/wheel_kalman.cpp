@@ -13,7 +13,7 @@
 #include "wheeladvanced.h"
 #include "controllers.h"
 
-KalmanFilter AdvancedWheelKalman(Matrix& initialState_IN)
+KalmanFilter AdvancedWheelKalman(Matrix initialState_IN)
 {
 	// Initialize Kalman Filter ...
 	// 4x4 correlation matrix. Initialized to 10.0
@@ -49,7 +49,7 @@ KalmanFilter AdvancedWheelKalman(Matrix& initialState_IN)
 	return Kalman;
 }
 
-Matrix GlobalPositionEstimator(Matrix& state_IN, Matrix& input_IN, double time_IN)
+Matrix GlobalPositionEstimator(Matrix state_IN, Matrix input_IN, double time_IN)
 {
 	// 2x1 measurement vector
 	Matrix z(2,1,0);

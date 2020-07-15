@@ -13,20 +13,20 @@
 #include "dynamicsystem.h"
 
 template<class Controller>
-dynamicsystem<Controller>::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN)
+dynamicsystem<Controller>::dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN)
 {
 	initializestate(initialState_IN, initialInput_IN, time_IN, sLen_IN, iLen_IN);
 }
 
 template<class Controller>
-dynamicsystem<Controller>::dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN, Controller& C)
+dynamicsystem<Controller>::dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Controller& C)
 {
 	_controllerClass = C;
 	initializestate(initialState_IN, initialInput_IN, time_IN, sLen_IN, iLen_IN);
 }
 
 template<class Controller>
-void dynamicsystem<Controller>::initializestate(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN)
+void dynamicsystem<Controller>::initializestate(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN)
 {
 	try{
 		if(initialState_IN.Size()[0] != sLen_IN)
@@ -54,13 +54,13 @@ void dynamicsystem<Controller>::initializestate(Matrix& initialState_IN, Matrix&
 }
 
 template<class Controller>
-void dynamicsystem<Controller>::SetEstimator(const std::function<Matrix(Matrix&,Matrix&,double)>& newEstimator_IN)
+void dynamicsystem<Controller>::SetEstimator(const std::function<Matrix(Matrix,Matrix,double)>& newEstimator_IN)
 {
 	_estimator = newEstimator_IN;
 }
 
 template<class Controller>
-void dynamicsystem<Controller>::SetController(const std::function<Matrix(Matrix&,Matrix&,double, Controller&)>& newController_IN)
+void dynamicsystem<Controller>::SetController(const std::function<Matrix(Matrix,Matrix,double, Controller&)>& newController_IN)
 {
 	_controllerCB = newController_IN;
 }
@@ -113,7 +113,7 @@ void dynamicsystem<Controller>::Simulate()
 }
 
 template<class Controller>
-void dynamicsystem<Controller>::Reset(Matrix& resetState_IN, Matrix& resetInput_IN)
+void dynamicsystem<Controller>::Reset(Matrix resetState_IN, Matrix resetInput_IN)
 {
 	_stateVector.clear();
 	_inputVector.clear();

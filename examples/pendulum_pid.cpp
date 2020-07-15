@@ -13,14 +13,13 @@
 #include "pendulum.h"
 #include "controllers.h"
 
-Matrix PIDControllerCallBack(Matrix& state_IN, Matrix& input_IN, double time_IN, PID& controller_IN)
+Matrix PIDControllerCallBack(Matrix state_IN, Matrix input_IN, double time_IN, PID& controller_IN)
 {
 	double referenceAngle = 45.0*(M_PI/180.0);
 	double error =  referenceAngle - state_IN(0,0);
 	double error_dot = -state_IN(1,0);
-	double u = controller_IN.compute(error, error_dot);
-	input_IN.Set(0,0,u);
-	return input_IN;
+	Matrix u(std::vector<double> { controller_IN.compute(error, error_dot) });
+	return u;
 }
 
 int main()

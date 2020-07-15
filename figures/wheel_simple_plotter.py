@@ -51,8 +51,8 @@ def plotter(nameCSV_IN, nameFigure_IN):
 	plt.show()	
 
 def main():
-	plotter("../_bin/wheel_output.csv", "Simple Wheel - Movement in only X Axis")
-	plotter("../_bin/wheel_output_custom_controller.csv", "Simple Wheel - Movement in both axes")
+	plotter("../wheel_output.csv", "Simple Wheel - Movement in only X Axis")
+	plotter("../wheel_output_custom_controller.csv", "Simple Wheel - Movement in both axes")
 
 if __name__ == "__main__":
     main()

@@ -12,7 +12,7 @@
 // Wheel 
 #include "wheel.h"
 
-Matrix SpeedControllerCallback(Matrix& state_IN, Matrix& input_IN, double time_IN, NOCONTROLLER& controller_IN)
+Matrix SpeedControllerCallback(Matrix state_IN, Matrix input_IN, double time_IN, NOCONTROLLER& controller_IN)
 {
 	if(time_IN > 5.0)
 	{

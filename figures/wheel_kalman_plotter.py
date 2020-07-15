@@ -68,8 +68,8 @@ def plotter(nameCSV_IN, nameFigure_IN):
 	plt.show()	
 
 def main():
-	plotter("../_bin/wheel_1kg_kalman_constant_torque.csv", "Advanced Wheel 1 kg with Kalman - Constant Torque")
-	plotter("../_bin/wheel_2kg_kalman_constant_torque.csv", "Advanced Wheel 2 kg with Kalman - Constant Torque")
+	plotter("../wheel_1kg_kalman_constant_torque.csv", "Advanced Wheel 1 kg with Kalman - Constant Torque")
+	plotter("../wheel_2kg_kalman_constant_torque.csv", "Advanced Wheel 2 kg with Kalman - Constant Torque")
 
 if __name__ == "__main__":
     main()

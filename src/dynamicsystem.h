@@ -25,14 +25,14 @@ class dynamicsystem
 {
 public:
 	// Constructor
-	dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN);
-	dynamicsystem(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN, Controller& C);
+	dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN);
+	dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Controller& C);
 
 	// Change the dynamic system controller
-	void SetController(const std::function<Matrix(Matrix&,Matrix&,double,Controller&)>& newController_IN);
+	void SetController(const std::function<Matrix(Matrix,Matrix,double,Controller&)>& newController_IN);
 
 	// Change dynamic system estimator
-	void SetEstimator(const std::function<Matrix(Matrix&,Matrix&,double)>& newEstimator_IN);
+	void SetEstimator(const std::function<Matrix(Matrix,Matrix,double)>& newEstimator_IN);
 
 	// System parameters (i.e. mass, damping ...)
 	virtual void SetParameters();
@@ -41,27 +41,27 @@ public:
 	void Simulate();
 
 	// Reset the system. Clears output vectors.
-	void Reset(Matrix& resetState_IN, Matrix& resetInput_IN);
+	void Reset(Matrix resetState_IN, Matrix resetInput_IN);
 
 	// Export simulation csv file
 	void ExportCSV(char const* s);
 
 protected:
 	// System Equations: Only diff is protected
-	virtual Matrix diff(Matrix& state_IN, Matrix& input_IN) = 0; // Difference Equation. Defined in derived class.	
+	virtual Matrix diff(Matrix state_IN, Matrix input_IN) = 0; // Difference Equation. Defined in derived class.	
 
 private:
 	// Called by constructors
-	void initializestate(Matrix& initialState_IN, Matrix& initialInput_IN, std::vector<double>& time_IN, int sLen_IN, int iLen_IN);
+	void initializestate(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN);
 
 	// System Equations: Private
 	Matrix integrator(Matrix state_IN, Matrix input_IN);	// Simple integrator
 
 	// Estimator: Defined in derived class or outside in the main program.
-	std::function<Matrix(Matrix&, Matrix&, double)> _estimator = NULL;	
+	std::function<Matrix(Matrix, Matrix, double)> _estimator = NULL;	
 
 	// Controller: Defined in derived class or outside in the main program.				
-	std::function<Matrix(Matrix&, Matrix&, double, Controller&)> _controllerCB = NULL;	
+	std::function<Matrix(Matrix, Matrix, double, Controller&)> _controllerCB = NULL;	
 
 	// Advanced controller class
 	Controller _controllerClass;
