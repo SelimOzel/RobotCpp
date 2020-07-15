@@ -23,7 +23,7 @@ int main()
 
 	// Integrator Values 
 	double dt = 0.001;	// Integrator delta [s]
-	double ft = 100.0;	// Integrator end time [s]
+	double ft = 10.0;	// Integrator end time [s]
 
 	// Vertical hopper initial values
 	Matrix state(std::vector<double> { y,y_dot });

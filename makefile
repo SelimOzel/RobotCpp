@@ -2,7 +2,7 @@
 
 # Builder
 define Builder
-	g++ -o $(1) $(2) -Isrc 
+	g++ -o $(1) $(2) -Isrc -Isrc/lib 
 endef
 
 all: output_folder hopper_vertical pendulum_double pendulum_pid wheel_kalman wheel_simple
