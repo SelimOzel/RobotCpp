@@ -13,13 +13,13 @@
 const size_t NUMBEROFSTATES = 4;
 const size_t NUMBEROFINPUTS = 2;
 
-template <class Controller>
-class DoublePendulum : public dynamicsystem<Controller>
+template <class Controller, class Estimator>
+class DoublePendulum : public dynamicsystem<Controller, Estimator>
 {
 public:
 	// Default constructor with custom initial settings
 	DoublePendulum(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN) : 
-	dynamicsystem<Controller>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
+	dynamicsystem<Controller, Estimator>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
 	{
 		this->SetEstimator(&ConstantEstimator);
 		this->SetController(&ConstantTorqueController);

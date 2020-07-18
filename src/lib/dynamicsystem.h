@@ -18,9 +18,10 @@
 #include <functional> // Used for passing controller to robot instances
 
 class NOCONTROLLER {}; // Global definition for robotcpp. Use this in the model when a controller class is not needed.
+class NOESTIMATOR {}; // Use this when no estimator is needed.
 
 // Base class for all dynamic systems in RobotCpp
-template<class Controller>
+template<class Controller, class Estimator>
 class dynamicsystem
 {
 public:

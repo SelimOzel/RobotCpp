@@ -12,21 +12,21 @@
 
 #include "dynamicsystem.h"
 
-template<class Controller>
-dynamicsystem<Controller>::dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN)
+template<class Controller, class Estimator>
+dynamicsystem<Controller, Estimator>::dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN)
 {
 	initializestate(initialState_IN, initialInput_IN, time_IN, sLen_IN, iLen_IN);
 }
 
-template<class Controller>
-dynamicsystem<Controller>::dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Controller& C)
+template<class Controller, class Estimator>
+dynamicsystem<Controller, Estimator>::dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Controller& C)
 {
 	_controllerClass = C;
 	initializestate(initialState_IN, initialInput_IN, time_IN, sLen_IN, iLen_IN);
 }
 
-template<class Controller>
-void dynamicsystem<Controller>::initializestate(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN)
+template<class Controller, class Estimator>
+void dynamicsystem<Controller, Estimator>::initializestate(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN)
 {
 	try{
 		if(initialState_IN.Size()[0] != sLen_IN)
@@ -53,26 +53,26 @@ void dynamicsystem<Controller>::initializestate(Matrix initialState_IN, Matrix i
 	}
 }
 
-template<class Controller>
-void dynamicsystem<Controller>::SetEstimator(const std::function<Matrix(Matrix,Matrix,double)>& newEstimator_IN)
+template<class Controller, class Estimator>
+void dynamicsystem<Controller, Estimator>::SetEstimator(const std::function<Matrix(Matrix,Matrix,double)>& newEstimator_IN)
 {
 	_estimator = newEstimator_IN;
 }
 
-template<class Controller>
-void dynamicsystem<Controller>::SetController(const std::function<Matrix(Matrix,Matrix,double, Controller&)>& newController_IN)
+template<class Controller, class Estimator>
+void dynamicsystem<Controller, Estimator>::SetController(const std::function<Matrix(Matrix,Matrix,double, Controller&)>& newController_IN)
 {
 	_controllerCB = newController_IN;
 }
 
-template<class Controller>
-void dynamicsystem<Controller>::SetParameters()
+template<class Controller, class Estimator>
+void dynamicsystem<Controller, Estimator>::SetParameters()
 {
 	std::cout << "SetParameters() needs to be defined at derived class.\n"; 
 }
 
-template<class Controller>
-void dynamicsystem<Controller>::Simulate()
+template<class Controller, class Estimator>
+void dynamicsystem<Controller, Estimator>::Simulate()
 {
 	try{
 		if(_controllerCB != NULL)
@@ -112,8 +112,8 @@ void dynamicsystem<Controller>::Simulate()
 	}
 }
 
-template<class Controller>
-void dynamicsystem<Controller>::Reset(Matrix resetState_IN, Matrix resetInput_IN)
+template<class Controller, class Estimator>
+void dynamicsystem<Controller, Estimator>::Reset(Matrix resetState_IN, Matrix resetInput_IN)
 {
 	_stateVector.clear();
 	_inputVector.clear();
@@ -123,8 +123,8 @@ void dynamicsystem<Controller>::Reset(Matrix resetState_IN, Matrix resetInput_IN
 	_input = resetInput_IN;	
 }
 
-template<class Controller>
-void dynamicsystem<Controller>::ExportCSV(char const* s)
+template<class Controller, class Estimator>
+void dynamicsystem<Controller, Estimator>::ExportCSV(char const* s)
 {
 	try{
 		if(_timeVector.size() > 0)
@@ -163,8 +163,8 @@ void dynamicsystem<Controller>::ExportCSV(char const* s)
 	}		
 }
 
-template<class Controller>
-Matrix dynamicsystem<Controller>::integrator(Matrix state_IN, Matrix input_IN)	
+template<class Controller, class Estimator>
+Matrix dynamicsystem<Controller, Estimator>::integrator(Matrix state_IN, Matrix input_IN)	
 {
 	Matrix s_dot = diff(state_IN, input_IN);
 	return _state + s_dot * _dt;
