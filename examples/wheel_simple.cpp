@@ -48,7 +48,7 @@ int main()
 	std::vector<double> time = { dt,ft };
 	
 	// Wheel simulation & data extraction 
-	Wheel<NOCONTROLLER, NOESTIMATOR> myWheel(state, input, time);
+	Wheel<> myWheel(state, input, time);
 
 	myWheel.Simulate();
 	myWheel.ExportCSV("wheel_output.csv");

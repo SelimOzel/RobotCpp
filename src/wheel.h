@@ -13,7 +13,7 @@
 const size_t NUMBEROFSTATES = 3;
 const size_t NUMBEROFINPUTS = 2;
 
-template <class Controller, class Estimator>
+template <class Controller = NOCONTROLLER, class Estimator = NOESTIMATOR>
 class Wheel : public dynamicsystem<Controller, Estimator>
 {
 public:

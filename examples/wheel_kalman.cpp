@@ -9,9 +9,9 @@
 
 #define _USE_MATH_DEFINES
 
-// Wheel 
+// Wheel with kalman filter
 #include "wheeladvanced.h"
-#include "controllers.h"
+#include "filters.h"
 
 KalmanFilter AdvancedWheelKalman(Matrix initialState_IN)
 {
@@ -88,7 +88,7 @@ int main()
 	std::vector<double> time = { dt,ft };
 	
 	// Wheel simulation & data extraction 
-	WheelAdvanced<NOCONTROLLER, NOESTIMATOR> myWheel(state, input, time);
+	WheelAdvanced<NOCONTROLLER, KalmanFilter> myWheel(state, input, time);
 	myWheel.SetEstimator(&GlobalPositionEstimator); // Set the kalman filter for global position estimation
 	myWheel.Simulate();
 	myWheel.ExportCSV("wheel_1kg_kalman_constant_torque.csv");

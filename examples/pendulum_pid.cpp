@@ -48,7 +48,7 @@ int main()
 	std::vector<double> time = { dt,ft };
 
 	// Peundulum creation
-	Pendulum<PID, NOESTIMATOR> myPendulum(state, input, time, pendulumPID);
+	Pendulum<PID> myPendulum(state, input, time, pendulumPID);
 	myPendulum.SetParameters(1.0, 1.0); // length 1m, damping 0.0
 	myPendulum.SetController(&PIDControllerCallBack); // attach pid controller
 	

@@ -34,7 +34,7 @@ int main()
 	std::vector<double> time = { dt,ft };
 
 	// Double pendulum creation
-	DoublePendulum<NOCONTROLLER, NOESTIMATOR> doublePendulum(state, input, time);
+	DoublePendulum<> doublePendulum(state, input, time);
 	doublePendulum.SetParameters(1.0, 1.0, 1.0, 1.0 ,0.5, 0.5); // l1,l2,m1,m2,b1,b2
 
 	// Simulation & data extraction 

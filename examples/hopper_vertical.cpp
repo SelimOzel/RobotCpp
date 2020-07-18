@@ -31,7 +31,7 @@ int main()
 	std::vector<double> time = { dt,ft };
 
 	// Vertical hopper creation
-	VerticalHopper<NOCONTROLLER, NOESTIMATOR> verticalHopper(state, input, time);
+	VerticalHopper<> verticalHopper(state, input, time);
 	verticalHopper.SetParameters(1.0, 1.0, 1.0); // k,m,eq
 
 	// Simulation & data extraction 

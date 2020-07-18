@@ -13,7 +13,7 @@
 const size_t NUMBEROFSTATES = 2;
 const size_t NUMBEROFINPUTS = 1;
 
-template <class Controller, class Estimator>
+template <class Controller = NOCONTROLLER, class Estimator = NOESTIMATOR>
 class Pendulum : public dynamicsystem<Controller, Estimator>
 {
 public:

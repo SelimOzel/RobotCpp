@@ -11,7 +11,6 @@
 #define __DYNAMICSYSTEM_H
 
 #include "linearalgebra.h" // Lightweight linear algebra tools
-#include "filters.h"
 
 #include <fstream> // Writing to csv file.
 #include <cmath> // Math operations
