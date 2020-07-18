@@ -13,7 +13,7 @@
 #include "pendulum.h"
 #include "controllers.h"
 
-Matrix PIDControllerCallBack(Matrix state_IN, Matrix input_IN, double time_IN, PID& controller_IN)
+Matrix PIDControllerCallback(Matrix state_IN, Matrix input_IN, double time_IN, PID& controller_IN)
 {
 	double referenceAngle = 45.0*(M_PI/180.0);
 	double error =  referenceAngle - state_IN(0,0);
@@ -50,7 +50,7 @@ int main()
 	// Peundulum creation
 	Pendulum<PID> myPendulum(state, input, time, pendulumPID);
 	myPendulum.SetParameters(1.0, 1.0); // length 1m, damping 0.0
-	myPendulum.SetController(&PIDControllerCallBack); // attach pid controller
+	myPendulum.SetController(&PIDControllerCallback); // attach pid controller
 	
 	// Simulation & data extraction 
 	myPendulum.Simulate();

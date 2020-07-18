@@ -13,7 +13,7 @@
 #include "wheeladvanced.h"
 #include "filters.h"
 
-KalmanFilter AdvancedWheelKalman(Matrix initialState_IN)
+KalmanFilter CreateKalman(Matrix initialState_IN)
 {
 	// Initialize Kalman Filter ...
 	// 4x4 correlation matrix. Initialized to 10.0
@@ -49,7 +49,7 @@ KalmanFilter AdvancedWheelKalman(Matrix initialState_IN)
 	return Kalman;
 }
 
-Matrix GlobalPositionEstimator(Matrix state_IN, Matrix input_IN, double time_IN)
+Matrix GlobalPositionEstimatorCallback(Matrix state_IN, Matrix input_IN, double time_IN, KalmanFilter& kalmanFilter_IN)
 {
 	// 2x1 measurement vector
 	Matrix z(2,1,0);
@@ -86,10 +86,13 @@ int main()
 	Matrix state(std::vector<double> { alpha,alpha_dot,x,y,a });
 	Matrix input(std::vector<double> { torque,w });
 	std::vector<double> time = { dt,ft };
+
+	// Kalman filter construction
+	KalmanFilter advancedWheelKalman = CreateKalman(state);
 	
 	// Wheel simulation & data extraction 
-	WheelAdvanced<NOCONTROLLER, KalmanFilter> myWheel(state, input, time);
-	myWheel.SetEstimator(&GlobalPositionEstimator); // Set the kalman filter for global position estimation
+	WheelAdvanced<NOCONTROLLER, KalmanFilter> myWheel(state, input, time, advancedWheelKalman);
+	myWheel.SetEstimator(&GlobalPositionEstimatorCallback); // Set the kalman filter for global position estimation
 	myWheel.Simulate();
 	myWheel.ExportCSV("wheel_1kg_kalman_constant_torque.csv");
 

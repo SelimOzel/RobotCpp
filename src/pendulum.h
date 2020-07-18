@@ -26,7 +26,7 @@ public:
 	}
 
 	// Default estimator: return state as is
-	static Matrix ConstantEstimator(Matrix state_IN, Matrix input_IN, double time_IN){return state_IN;}
+	static Matrix ConstantEstimator(Matrix state_IN, Matrix input_IN, double time_IN, Estimator& E){return state_IN;}
 
 	// Default controller: constant torque
 	static Matrix ConstantTorqueController(Matrix state_IN, Matrix input_IN, double time_IN, Controller& C){return input_IN;}

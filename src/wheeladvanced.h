@@ -18,15 +18,15 @@ class WheelAdvanced : public dynamicsystem<Controller, Estimator>
 {
 public:
 	// Default constructor with custom initial settings
-	WheelAdvanced(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN) : 
-	dynamicsystem<Controller, Estimator>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
+	WheelAdvanced(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, Estimator& E) : 
+	dynamicsystem<Controller, Estimator>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS, E)
 	{
 		this->SetEstimator(&ConstantEstimator);
 		this->SetController(&ConstantTorqueController);
 	}
 
 	// Default estimator: return state as is
-	static Matrix ConstantEstimator(Matrix state_IN, Matrix input_IN, double time_IN){return state_IN;}
+	static Matrix ConstantEstimator(Matrix state_IN, Matrix input_IN, double time_IN, Estimator& E){return state_IN;}
 
 	// Default controller: constant torque
 	static Matrix ConstantTorqueController(Matrix state_IN, Matrix input_IN, double time_IN, Controller& C){return input_IN;}

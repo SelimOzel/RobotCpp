@@ -24,15 +24,17 @@ template<class Controller, class Estimator>
 class dynamicsystem
 {
 public:
-	// Constructor
+	// Constructor(s)
 	dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN);
 	dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Controller& C);
+	dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Estimator& E);
+	dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Controller& C, Estimator& E);
 
 	// Change the dynamic system controller
 	void SetController(const std::function<Matrix(Matrix,Matrix,double,Controller&)>& newController_IN);
 
 	// Change dynamic system estimator
-	void SetEstimator(const std::function<Matrix(Matrix,Matrix,double)>& newEstimator_IN);
+	void SetEstimator(const std::function<Matrix(Matrix,Matrix,double,Estimator&)>& newEstimator_IN);
 
 	// System parameters (i.e. mass, damping ...)
 	virtual void SetParameters();
@@ -57,17 +59,17 @@ private:
 	// System Equations: Private
 	Matrix integrator(Matrix state_IN, Matrix input_IN);	// Simple integrator
 
-	// Estimator: Defined in derived class or outside in the main program.
-	std::function<Matrix(Matrix, Matrix, double)> _estimator = NULL;	
-
-	// Controller: Defined in derived class or outside in the main program.				
+	// Simple callbacks for estimator/controller
+	std::function<Matrix(Matrix, Matrix, double, Estimator&)> _estimatorCB = NULL;				
 	std::function<Matrix(Matrix, Matrix, double, Controller&)> _controllerCB = NULL;	
 
-	// Advanced controller class
+	// Advanced classes for estimator/controller
 	Controller _controllerClass;
+	Estimator _estimatorClass;
 
 	// States & Inputs: current values
 	Matrix _state;
+	Matrix _stateEstimated;
 	Matrix _input;
 
 	size_t _sLen = 0;		// State vector dimension

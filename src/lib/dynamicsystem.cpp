@@ -26,6 +26,21 @@ dynamicsystem<Controller, Estimator>::dynamicsystem(Matrix initialState_IN, Matr
 }
 
 template<class Controller, class Estimator>
+dynamicsystem<Controller, Estimator>::dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Estimator& E)
+{
+	_estimatorClass = E;
+	initializestate(initialState_IN, initialInput_IN, time_IN, sLen_IN, iLen_IN);
+}
+
+template<class Controller, class Estimator>
+dynamicsystem<Controller, Estimator>::dynamicsystem(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN, Controller& C, Estimator& E)
+{
+	_controllerClass = C;
+	_estimatorClass = E;
+	initializestate(initialState_IN, initialInput_IN, time_IN, sLen_IN, iLen_IN);
+}
+
+template<class Controller, class Estimator>
 void dynamicsystem<Controller, Estimator>::initializestate(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, int sLen_IN, int iLen_IN)
 {
 	try{
@@ -54,9 +69,9 @@ void dynamicsystem<Controller, Estimator>::initializestate(Matrix initialState_I
 }
 
 template<class Controller, class Estimator>
-void dynamicsystem<Controller, Estimator>::SetEstimator(const std::function<Matrix(Matrix,Matrix,double)>& newEstimator_IN)
+void dynamicsystem<Controller, Estimator>::SetEstimator(const std::function<Matrix(Matrix,Matrix,double, Estimator&)>& newEstimator_IN)
 {
-	_estimator = newEstimator_IN;
+	_estimatorCB = newEstimator_IN;
 }
 
 template<class Controller, class Estimator>
@@ -88,8 +103,8 @@ void dynamicsystem<Controller, Estimator>::Simulate()
 			while (currentTime <= _ft)
 			{
 				// Compute next input and next state. Input must be computed first!
-				_state = _estimator(_state, _input, currentTime);
-				_input = _controllerCB(_state, _input, currentTime, _controllerClass);
+				_stateEstimated = _estimatorCB(_state, _input, currentTime, _estimatorClass);
+				_input = _controllerCB(_stateEstimated, _input, currentTime, _controllerClass);
 				_state = integrator(_state, _input);
 
 				// Update simulation time
