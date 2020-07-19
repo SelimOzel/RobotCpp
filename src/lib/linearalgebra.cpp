@@ -462,6 +462,7 @@ Matrix Matrix::Inv() const
 	    double determinant = Det(nr); 
 	    if (determinant == 0) 
 	    { 
+	    	std::cout << "Determinant singularity: " << determinant << std::endl;
 	        throw std::runtime_error("Inverse error: determinant must be non-zero\n"); 
 	    } 
 	  

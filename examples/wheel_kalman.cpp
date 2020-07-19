@@ -59,10 +59,8 @@ Matrix GlobalPositionEstimatorCallback(Matrix state_IN, Matrix input_IN, double 
 	// 2x1 input vector. set to zero.
 	Matrix u(2,1,0);
 
-	//Kalman.Filter(z,u);
-	//KalmanFilter wheelKalman(F, H, B);
-
-	return state_IN;
+	return kalmanFilter_IN.Filter(z,u);
+	//return state_IN;
 }
 
 int main()

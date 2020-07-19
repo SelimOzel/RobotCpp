@@ -24,6 +24,8 @@ KalmanFilter::KalmanFilter(const Matrix& F_IN, const Matrix& H_IN, const Matrix&
 // u is Kx1 vector: K is number of external motion/forces.
 Matrix KalmanFilter::Filter(Matrix& z, Matrix& u)
 {
+	std::cout << z(0,0) << " " << z(1,0) << std::endl;
+
 	// Variables
 	Matrix y;
 	Matrix s;
@@ -39,6 +41,8 @@ Matrix KalmanFilter::Filter(Matrix& z, Matrix& u)
 	// Measurement Update
 	y = z - _H*_x_prediction;
 	s = _H*_P_prediction*_H.T(); // R matrix here can be added here for sensor noise
+	Matrix::Size(s);
+	Matrix::Print(s);
 	K = _P_prediction*_H.T()*s.Inv();
 
 	// Kalman Filter Update
@@ -48,6 +52,8 @@ Matrix KalmanFilter::Filter(Matrix& z, Matrix& u)
 	// Update stored filter values
 	_x_prediction = x_next;
 	_P_prediction = P_next;
+
+	std::cout<<std::endl;
 
 	return x_next;
 }
