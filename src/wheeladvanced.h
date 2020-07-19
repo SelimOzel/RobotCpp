@@ -18,6 +18,13 @@ class WheelAdvanced : public dynamicsystem<Controller, Estimator>
 {
 public:
 	// Default constructor with custom initial settings
+	WheelAdvanced(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN) : 
+	dynamicsystem<Controller, Estimator>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS)
+	{
+		this->SetEstimator(&ConstantEstimator);
+		this->SetController(&ConstantTorqueController);
+	}
+
 	WheelAdvanced(Matrix initialState_IN, Matrix initialInput_IN, std::vector<double> time_IN, Estimator& E) : 
 	dynamicsystem<Controller, Estimator>(initialState_IN, initialInput_IN, time_IN, NUMBEROFSTATES, NUMBEROFINPUTS, E)
 	{
@@ -55,8 +62,8 @@ private:
 		{
 			state_IN(1,0), // alpha_dot
 			(input_IN(0,0)-_b*state_IN(1,0))/_I, // (Torque_IN-b*alpha_dot) / I_disk
-			cos(state_IN(3,0))*_r*state_IN(1,0), // cos(theta)*r*alpha_dot
-			sin(state_IN(3,0))*_r*state_IN(1,0), // sin(theta)*r*alpha_dot
+			cos(state_IN(4,0))*_r*state_IN(1,0), // cos(theta)*r*alpha_dot
+			sin(state_IN(4,0))*_r*state_IN(1,0), // sin(theta)*r*alpha_dot
 			input_IN(1,0) // w 
 		};
 		return s_diff;

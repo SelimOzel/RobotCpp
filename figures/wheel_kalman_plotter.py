@@ -14,6 +14,9 @@ def plotter(nameCSV_IN, nameFigure_IN):
 
 	t = [] # [s]
 
+	xPosEst = [] # [m] estimated x position
+	yPosEst = [] # [m] estimated y position
+
 	with open(nameCSV_IN) as csvfile:
 		spamreader = csv.reader(csvfile)
 		for row in spamreader:
@@ -25,6 +28,9 @@ def plotter(nameCSV_IN, nameFigure_IN):
 			angle.append(float(row[5]))
 			torque.append(float(row[6]))
 			w.append(float(row[7]))
+			xPosEst.append(float(row[10]))
+			yPosEst.append(float(row[11]))
+			
 
 	fig, ax = plt.subplots(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
 	fig.canvas.set_window_title(nameFigure_IN)
@@ -67,9 +73,27 @@ def plotter(nameCSV_IN, nameFigure_IN):
 
 	plt.show()	
 
+	fig, ax = plt.subplots(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
+	fig.canvas.set_window_title(nameFigure_IN)
+
+	plt.subplot(121)
+	plt.plot(xPos,yPos, 'r')
+	plt.xlabel('xPos [m]')
+	plt.ylabel('yPos [m]')
+	plt.grid()
+
+	plt.subplot(122)
+	plt.plot(xPosEst,yPosEst, 'b')	
+	plt.xlabel('xPos est. [m]')
+	plt.ylabel('yPos est. [m]')
+	plt.grid()
+
+	plt.show()	
+
+
 def main():
 	plotter("../wheel_1kg_kalman_constant_torque.csv", "Advanced Wheel 1 kg with Kalman - Constant Torque")
-	plotter("../wheel_2kg_kalman_constant_torque.csv", "Advanced Wheel 2 kg with Kalman - Constant Torque")
+	#plotter("../wheel_2kg_kalman_constant_torque.csv", "Advanced Wheel 2 kg with Kalman - Constant Torque")
 
 if __name__ == "__main__":
     main()

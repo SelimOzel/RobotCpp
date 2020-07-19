@@ -81,6 +81,7 @@ private:
 
 	// Output 
 	std::vector<Matrix> _stateVector;
+	std::vector<Matrix> _stateEstimatedVector;
 	std::vector<Matrix> _inputVector;
 	std::vector<double> _timeVector;
 };

@@ -39,7 +39,7 @@ KalmanFilter CreateKalman(Matrix initialState_IN)
 		{0,1,0,0}
 	};
 
-	Matrix kalmanStateInit(4,0,0.0);
+	Matrix kalmanStateInit(4,1,0.0);
 	kalmanStateInit.Set(0,0, initialState_IN(0,0)); // Wheel angle, alpha
 	kalmanStateInit.Set(0,0, initialState_IN(4,0)); // Wheel global angle, theta
 
@@ -89,7 +89,7 @@ int main()
 
 	// Kalman filter construction
 	KalmanFilter advancedWheelKalman = CreateKalman(state);
-	
+
 	// Wheel simulation & data extraction 
 	WheelAdvanced<NOCONTROLLER, KalmanFilter> myWheel(state, input, time, advancedWheelKalman);
 	myWheel.SetEstimator(&GlobalPositionEstimatorCallback); // Set the kalman filter for global position estimation

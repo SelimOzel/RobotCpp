@@ -57,6 +57,7 @@ void dynamicsystem<Controller, Estimator>::initializestate(Matrix initialState_I
 		_iLen = iLen_IN;
 
 		_state = initialState_IN;	
+		_stateEstimated = _state;
 		_input = initialInput_IN;				
 
 		_dt = time_IN[0];
@@ -96,6 +97,7 @@ void dynamicsystem<Controller, Estimator>::Simulate()
 
 			// Fill initial values
 			_stateVector.push_back(_state);
+			_stateEstimatedVector.push_back(_stateEstimated);
 			_inputVector.push_back(_input);
 			_timeVector.push_back(currentTime);
 
@@ -103,15 +105,16 @@ void dynamicsystem<Controller, Estimator>::Simulate()
 			while (currentTime <= _ft)
 			{
 				// Compute next input and next state. Input must be computed first!
-				_stateEstimated = _estimatorCB(_state, _input, currentTime, _estimatorClass);
 				_input = _controllerCB(_stateEstimated, _input, currentTime, _controllerClass);
 				_state = integrator(_state, _input);
+				_stateEstimated = _estimatorCB(_state, _input, currentTime, _estimatorClass);
 
 				// Update simulation time
 				currentTime += _dt;
 
 				// Fill updated values
 				_stateVector.push_back(_state);
+				_stateEstimatedVector.push_back(_stateEstimated);
 				_inputVector.push_back(_input);
 				_timeVector.push_back(currentTime);
 			}
@@ -131,6 +134,7 @@ template<class Controller, class Estimator>
 void dynamicsystem<Controller, Estimator>::Reset(Matrix resetState_IN, Matrix resetInput_IN)
 {
 	_stateVector.clear();
+	_stateEstimatedVector.clear();
 	_inputVector.clear();
 	_timeVector.clear();
 
@@ -154,13 +158,17 @@ void dynamicsystem<Controller, Estimator>::ExportCSV(char const* s)
 				}
 				for(unsigned i = 0; i<_iLen; i++)
 				{
-					if(i+1 != _iLen)
+					output_file << _inputVector[r](i,0) << ", ";
+				}
+				for(unsigned i = 0; i<_sLen; i++)
+				{
+					if(i+1 != _sLen)
 					{
-						output_file << _inputVector[r](i,0) << ", ";
+						output_file << _stateEstimatedVector[r](i,0) << ", ";
 					}
 					else
 					{
-						output_file << _inputVector[r](i,0);
+						output_file << _stateEstimatedVector[r](i,0);
 					}
 				}
 				output_file << "\n";
